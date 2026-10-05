@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#12060a">
+  <meta name="description" content="Offline marine bunker, ROB, tank, lubricant and ETA/ETD planning calculator.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Bunker Pilot">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Bunker Pilot — Bunker & ROB Planner</title>
+</head>
+<body>
+<div id="introScreen" class="intro-screen" role="img" aria-label="Bunker Pilot">
+  <div class="intro-bg" aria-hidden="true"></div>
+  <div class="intro-glow"></div>
+  <img class="intro-icon" src="./icon-512.png" alt="" width="84" height="84">
+  <div class="intro-name">Bunker Pilot</div>
+  <div class="intro-tag">Bunker · ROB · Voyage Planning</div>
+</div>
+<div class="app-shell">
+  <svg class="bg-watermark" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path d="M50 2 58 42 98 50 58 58 50 98 42 58 2 50 42 42Z" fill="currentColor"/></svg>
+
+  <!-- Navigation: left sidebar on desktop, bottom dock on phones -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <img class="brand-mark" src="./icon-192.png" alt="" width="42" height="42">
+      <div><strong>Bunker Pilot</strong><span>Bunker & ROB voyage planner</span></div>
+    </div>
+    <div class="sidebar-plan">
+      <span>Active plan</span>
+      <strong id="sideVessel">No vessel yet</strong>
+      <small id="sideVoyage">Set up the vessel and voyage</small>
+    </div>
+    <nav class="side-nav" aria-label="Main navigation">
+      <a href="#setup" class="nav-link" data-tab="setup">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>
+        <span class="nl">Setup</span>
+      </a>
+      <a href="#tanks" class="nav-link" data-tab="tanks">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="7" ry="2.5"/><path d="M5 5.5v13c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-13"/><path d="M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/></svg>
+        <span class="nl">Tanks</span>
+      </a>
+      <a href="#voyage" class="nav-link" data-tab="voyage">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>
+        <span class="nl">Ports</span>
+      </a>
+      <a href="#dashboard" class="nav-link active nav-home" data-tab="dashboard">
+        <span class="ico-home-wrap"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="8" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/></svg></span>
+        <span class="nl"><span class="nl-full">Dashboard</span><span class="nl-short">Home</span></span>
+      </a>
+      <a href="#bunkering" class="nav-link" data-tab="bunkering">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c2.6 3 4.2 5.1 4.2 7.2a4.2 4.2 0 0 1-8.4 0c0-2.1 1.6-4.2 4.2-7.2z"/><path d="M3 16.5h18l-2.4 4.5H5.4z"/><path d="M12 16.5V14"/></svg>
+        <span class="nl"><span class="nl-full">Bunkering & Lube Oil</span><span class="nl-short">Bunker</span></span>
+      </a>
+      <a href="#eca" class="nav-link" data-tab="eca">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+        <span class="nl"><span class="nl-full">ECA / SECA</span><span class="nl-short">ECA</span></span>
+      </a>
+      <a href="#results" class="nav-link" data-tab="results">
+        <span class="ico-wrap">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>
+          <i class="nav-dot" id="navDot" hidden></i>
+        </span>
+        <span class="nl"><span class="nl-full">Results & Export</span><span class="nl-short">Results</span></span>
+      </a>
+    </nav>
+    <div class="sidebar-actions">
+      <div class="btn-pair"><button id="demoPlan" class="primary full">Load demo</button><button id="clearAll" class="ghost danger full">Clear all entry</button></div>
+      <button id="newPlan" class="ghost full">New plan</button>
+    </div>
+    <div class="sidebar-note">Offline-first. Use vessel records, calibration data, approved rates and company procedures for operational decisions.</div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <img class="top-logo" src="./icon-192.png" alt="" width="34" height="34">
+      <div class="top-title">
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="topSub">Bunker & ROB Planner</p>
+      </div>
+      <div class="topbar-actions">
+        <span class="version-badge" id="appVersion">v1.62</span>
+        <button id="hintsBtn" class="icon-btn" type="button" data-label="Hints" aria-label="Hints and help" aria-pressed="false" title="Hints & help">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
+        </button>
+        <button id="tourBtn" class="icon-btn" type="button" data-label="Guide me" aria-label="Guide me through the app" title="Guide me">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button id="calcBtn" class="icon-btn" type="button" data-label="Calculator" aria-label="Open calculator" title="Calculator">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><rect x="8" y="5.5" width="8" height="3.5" rx=".8"/><path d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 16.5h.01M12 16.5h.01M15.5 16.5h.01"/></svg>
+        </button>
+        <button id="alertsBtn" class="icon-btn" type="button" data-label="Alerts" aria-label="Planning alerts" title="Planning alerts">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+          <span id="alertsBadge" class="icon-badge" hidden>0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ DASHBOARD ============ -->
+    <section id="dashboard" class="section active">
+      <p class="muted why-hint">Tap any value or text to see where it comes from and how it was calculated.</p>
+      <button type="button" id="planBunkerBtn" class="primary full plan-bunker-btn" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c2.6 3 4.2 5.1 4.2 7.2a4.2 4.2 0 0 1-8.4 0c0-2.1 1.6-4.2 4.2-7.2z"/><path d="M3 16.5h18l-2.4 4.5H5.4z"/><path d="M12 16.5V14"/></svg><span>Plan a bunkering</span></button>
+      <div id="robCompare" class="metric-section"></div>
+      <div id="bunkerNeeded" class="panel next-panel"></div>
+      <div id="ecaAhead"></div>
+
+      <div id="portDetails" class="panel port-details-card"></div>
+
+      <div class="panel">
+        <div class="panel-heading"><div><h3>Route summary</h3><span class="muted">Tap a port — or swipe the Tank ROB card left / right — to see its ETA/ETD, consumption and tank ROB.</span></div></div>
+        <div id="routeSummary" class="route-summary"></div>
+      </div>
+
+      <div id="tankRobCard" class="panel tank-rob-card"></div>
+    </section>
+
+    <!-- ============ SETUP ============ -->
+    <section id="setup" class="section" hidden>
+      <div class="section-title"><div><h2>Vessel & operating data</h2></div></div>
+      <div class="panel form-grid">
+        <div class="field f-full"><label>Vessel name<input id="vesselName" autocomplete="off"></label><span class="help">Name of the ship used on the planning sheet and the Word voyage report.</span></div>
+        <div class="field f-half"><label>Voyage / passage no.<input id="voyageNo" autocomplete="off"></label><span class="help">Company voyage number, passage number or planning reference.</span></div>
+        <div class="field f-full f-row"><div class="pos-row"><label class="pos-name">Present position<input id="currentPosition" list="defaultPorts" placeholder="Select or type port / sea area" autocomplete="off"></label><label class="pos-offset">UTC offset<select id="posUtcOffset" aria-label="UTC offset of the present position"></select></label></div><span class="help">Offline-ready default port list. You can also type a position that is not in the list. The UTC offset is the ship’s time zone at this position — it converts the local noon report date below into the start point of the ETA/ETD calculation.</span><datalist id="defaultPorts"></datalist></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-heading"><div><h3>Consumption rates & reserves</h3><span class="help">Use actual vessel/engine data. Every variable includes a short explanation. Rates are treated as fixed once entered — changing a set rate away from its value asks you to confirm.</span></div></div>
+        <div id="ratesList" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- ============ TANKS ============ -->
+    <section id="tanks" class="section" hidden>
+      <div class="section-title"><div><h2>Present Tank Condition</h2><p class="section-subtitle">Set capacity, present ROB and the order in which consumable tanks are drained.</p></div></div>
+      <div class="panel form-grid noon-card">
+        <div class="field f-full"><div class="noon-head"><strong>Logbook ROB</strong><span class="noon-date-chip" id="noonRobDate"></span></div><span class="help" style="display:block">Reported remaining-on-board figures at the noon report date below — kept as a reference alongside the tank-by-tank figures further down this tab, and shown on the Dashboard next to the calculated actual tank ROB.</span></div>
+        <div class="field f-full field-wide"><div class="pos-row"><label class="pos-name">Date of noon report entry (Local time)<input id="noonLocal" type="datetime-local"></label><label class="pos-offset">UTC offset<select id="noonUtcOffset" aria-label="UTC offset of the noon report entry"></select></label></div><div class="noon-date-actions"><button type="button" id="noonLocalNow" class="ghost sm" title="Set the date to today (local time at the present position) and the time to 12:00">Today · 12:00 local</button></div><span class="help">Ship’s local date/time of the noon report this plan is built from. Also used as the start point for the ETA/ETD calculation, converted with the UTC offset beside the date (the same offset as Present position on Setup).</span></div>
+        <div class="field f-half"><label>Fuel oil (MT)<input id="noonRobFo" type="number" inputmode="decimal" step="0.01" min="0"></label></div>
+        <div class="field f-half"><label>Diesel oil (MT)<input id="noonRobDo" type="number" inputmode="decimal" step="0.01" min="0"></label></div>
+        <div class="field f-half"><label>Cylinder oil (L)<input id="noonRobCyl" type="number" inputmode="decimal" step="0.01" min="0"></label></div>
+        <div class="field f-half"><label>ME system oil (L)<input id="noonRobMesys" type="number" inputmode="decimal" step="0.01" min="0"></label></div>
+        <div class="field f-half"><label>GE system oil (L)<input id="noonRobGesys" type="number" inputmode="decimal" step="0.01" min="0"></label></div>
+      </div>
+      <div id="tankDatePanel" class="panel tank-save tank-date"></div>
+      <div id="maxFillBar" class="panel maxfill-bar"></div>
+      <div class="panel tank-sequence-guide help-block"><strong>Consumption sequence:</strong> Within each fuel group, Sequence 1 is consumed first, then 2, 3, and so on. Service/settling/support tanks can be excluded from automatic tank consumption. Capacity and unpumpable are treated as fixed once entered — changing either away from a set value asks you to confirm.<br><strong>Fields outlined in teal</strong> — Density, Corrected GOV (volume), Observed temperature (and Present ROB for tanks entered by weight) — change with every sounding. When they are all updated, use the floating <strong>Save</strong> button to keep the date, time and tank conditions.</div>
+      <div id="tankList" class="stack"></div>
+      <div id="tankSavePanel" class="panel tank-save"></div>
+      <details class="panel fold">
+        <summary>Current Storage tank consumption order</summary>
+        <div id="activeTankList" class="sequence-summary"></div>
+      </details>
+    </section>
+
+    <!-- ============ VOYAGE ============ -->
+    <section id="voyage" class="section" hidden>
+      <div class="section-title"><div><h2>Ports, ETA / ETD & voyage legs</h2></div></div>
+      <div class="panel help-block"><p class="muted" style="margin:0">For each port, enter the distance from the previous port, sailing speed, port stay in days and hours, and local UTC offset (dropdown). The first port normally uses 0 NM and acts as the voyage start port; you can optionally set its exact ETA instead of using the voyage start time. Bunkering, lube oil replenishment and ECA/SECA changeover planning for each port are in their own tabs.</p></div>
+      <div id="routeList" class="stack"></div>
+    </section>
+
+    <!-- ============ BUNKERING & LUBE OIL ============ -->
+    <section id="bunkering" class="section" hidden>
+      <div class="section-title"><div><h2>Bunkering & Lube Oil Replenishment</h2><p class="section-subtitle">Plan fuel bunkering and lube oil replenishment per port, and preview the tank condition at ETA and ETD.</p></div></div>
+      <div id="bunkerList" class="stack"></div>
+    </section>
+
+    <!-- ============ ECA / SECA ============ -->
+    <section id="eca" class="section" hidden>
+      <div class="section-title"><div><h2>ECA / SECA Fuel Changeover</h2><p class="section-subtitle">Plan the sulphur-limit changeover on entering or leaving an Emission Control Area — required hours, start/finish time and vessel position.</p></div></div>
+      <div id="ecaList" class="stack"></div>
+    </section>
+
+    <!-- ============ RESULTS & EXPORT ============ -->
+    <section id="results" class="section" hidden>
+      <div class="section-title"><div><h2>Voyage results</h2></div></div>
+      <p class="muted why-hint">Tap any value or text to see where it comes from and how it was calculated. Planning alerts are under the bell icon in the top bar.</p>
+      <h3 class="results-subhead">Total consumption</h3>
+      <div id="consumptionKpis" class="metric-grid"></div>
+      <div class="panel table-wrap" id="resultTable"></div>
+      <details class="panel fold"><summary>How the results are calculated</summary><p class="muted">Arrival ROB is the ROB after the preceding sea passage. Departure ROB is after current port consumption plus any bunker credited at that port. Consumable fuel tanks are switched automatically in the selected sequence when the active tank is exhausted. No negative ROB is carried; a shortage is flagged instead.</p></details>
+
+      <div class="section-title"><div><h2>Save & reopen voyages</h2></div></div>
+      <div class="panel export-panel">
+        <div class="export-grid">
+          <div class="save-voyage-block"><strong>Word voyage report</strong><p>Real <code>.docx</code> with tank ROB at ETA/ETD for every port, bunkering requirements, ECA/SECA changeovers, the latest Plan a bunkering result (if you used it) and more — no internet connection needed.</p><div class="button-row"><button id="exportDocx" class="primary">Export DOCX</button></div></div>
+          <div class="save-voyage-block"><strong>Bunkering plan form</strong><p>Form S-082000-03FRM (Bunker/Internal Transfer Plan &amp; Result) as <code>.docx</code>, one page per port with planned fuel or diesel bunkering. Tanks, capacities, filling limit, present and estimated-after condition and planned quantities are filled in; soundings, BDN figures, times, rates and results are left blank to write in.</p><div class="button-row"><button id="exportBunkerForm" class="primary">Export bunkering plan form</button></div></div>
+          <div class="save-voyage-block"><strong>Lub. oil replenishment form</strong><p>Form S-082001-02FRM as <code>.docx</code>, one page per port with planned lube-oil replenishment. Tank capacity, ROB, plan quantities and drums are filled in; gauges, times and actual results are left blank to write in.</p><div class="button-row"><button id="exportLubeForm" class="primary">Export lub. oil form</button></div></div>
+          <div class="save-voyage-block"><strong>Save Voyage Data</strong><p>Save every input under a name and reopen it anytime, even after closing the app (stored on this device).</p><div class="button-row"><input id="saveVoyageName" type="text" placeholder="Voyage name, e.g. MV Example — Sep 2026" autocomplete="off"><button id="saveVoyageBtn" class="primary">Save current voyage</button></div><div id="savedVoyageList" class="saved-voyage-list"></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-heading"><div><h3>Plan</h3><span class="muted">Start from an example or a clean sheet.</span></div></div>
+        <div class="button-row wrap"><button id="demoPlan2" class="primary">Load demo</button><button id="clearAll2" class="ghost danger">Clear all entry</button></div>
+      </div>
+      <details class="panel fold"><summary>What this planner covers</summary><div class="notice-grid"><div><strong>Inputs</strong><p>Present position, position status, per-tank sequence and display order, tank role (storage/settling/service/support) and in-service tank selection, tank capacity/ROB/unpumpable quantity, fuel oil type (VLSFO/HFO) for mixing rules, explicit bunkering, port UTC offset, separate ETA/ETD, lubricant rates and reserve basis.</p></div><div><strong>Outputs</strong><p>Route summary, present-position status, tank bar charts, tank utilization, ETA/ETD at each port, arrival/departure ROB, reserve margin and bunker requirement.</p></div><div><strong>Safeguards</strong><p>Confirm-before-delete, capacity overflow flags, no silent negative ROB, shortage warnings and local browser backup/restore.</p></div></div></details>
+    </section>
+
+    <div id="addTankModal" class="modal" hidden><div class="modal-card"><div class="modal-head"><h3>Add tank <span id="addTankModalGroup"></span></h3><button class="ghost" data-close-modal="addTankModal" aria-label="Close">✕</button></div>
+      <div class="field"><label>Tank role<select id="addTankRole"><option value="storage">Storage / active</option><option value="settling">Settling tank</option><option value="service">Service tank</option><option value="support">Support / fixed ROB</option></select></label></div>
+      <div class="field" id="addTankDensityField" hidden><label>Average density (t/m³)<input id="addTankDensity" type="number" inputmode="decimal" step="0.001" min="0.5" max="1.2" placeholder="e.g. 0.95"></label><span class="help" style="display:block">Tank capacity for fuel and diesel is entered in m³. The density converts it to tonnes (MT) for the ROB and consumption calculations.</span></div>
+      <div class="field" id="addTankFuelTypeField" hidden><label>Fuel type<select id="addTankFuelType"></select></label><input id="addTankFuelTypeCustom" class="manual-name-input" placeholder="Type the fuel type (e.g. DMA 0.1%S)" autocomplete="off" hidden><span class="help" style="display:block">Sets the grade this tank is dedicated to, used for the bunkering mixing rule.</span></div>
+      <div class="field"><label>Insert position<select id="addTankPosition"></select></label><span class="help" style="display:block">Choose which existing tank the new one should appear next to in the list, or add it at the end.</span></div>
+      <div class="button-row"><button id="addTankConfirm" class="primary">Add tank</button></div>
+    </div></div>
+    <div id="helpModal" class="modal" hidden><div class="modal-card"><div class="modal-head"><h3>Hints & how to use the planner</h3><button class="ghost" data-close-modal="helpModal" aria-label="Close">✕</button></div><label class="check hints-toggle-row"><input type="checkbox" id="hintsToggle"> Show all field hints on screen</label><ol class="help-steps"><li><strong>Setup first.</strong> Enter vessel, present position with its UTC offset, noon report date (local time), fuel/lubricant consumption rates and reserve basis.</li><li><strong>Configure Tanks second.</strong> Enter every relevant tank, capacity, present ROB, unpumpable quantity and consumption sequence. Mark tanks that are actually in service for automatic consumption.</li><li><strong>Voyage / Ports third.</strong> Add ports in sailing order. Enter distance, speed, port stay in days + hours and UTC offset.</li><li><strong>Bunkering & Lube Oil, and ECA/SECA.</strong> Plan fuel bunkering and lube oil replenishment (with ETA/ETD tank-condition bars) in the Bunkering tab, and any Emission Control Area fuel changeover in the ECA/SECA tab.</li><li><strong>Plan a bunkering.</strong> On the Dashboard, tap Plan a bunkering, choose a port (or another port with its arrival date) to see how much fuel, diesel and lube oil to take, tank by tank. You can change the grade, sulphur or any tank quantity, export a Word file, or write the plan into the Bunkering tab.</li><li><strong>Review the Dashboard.</strong> Tap any route point to inspect ETA/ETD, sea and port consumption, fuel ROB and tank-by-tank ROB at ETA → ETD.</li><li><strong>Save your work.</strong> In Results, save the voyage under a name to reopen it anytime on this device. Everything recalculates automatically as you type — there is no Recalculate button.</li><li><strong>Need the explanations?</strong> Tap or focus any input to reveal its hint text, or switch on “Show all field hints on screen” above to show every hint at once.</li><li><strong>Alerts.</strong> Tap the bell icon, then tap any alert — the app jumps to the field that causes it and shows how to correct it.</li><li><strong>Calculator.</strong> The calculator icon in the top bar opens a built-in calculator.</li></ol><div class="notice-grid"><div><strong>ETA vs voyage start</strong><p>The noon report date (local time at the present position, converted with the UTC offset beside Present position) is the time reference for the plan. The first port ETA is an arrival time. If the first port is the departure/current port and distance is 0 NM, they can be the same. If the first port represents the next destination, its ETA should include the first sailing leg.</p></div><div><strong>Offline operation</strong><p>The default port list is bundled inside the app. It does not require an internet connection.</p></div><div><strong>Engineering note</strong><p>This is a planning tool. Verify ROB, calibration, BDN data, rates, maker limits and company procedures before operational use.</p></div></div></div></div>
+    <div id="calcModal" class="modal" hidden><div class="modal-card calc-card"><div class="modal-head"><h3>Calculator</h3><button class="ghost" data-close-modal="calcModal" aria-label="Close">✕</button></div>
+            <div id="calcPane">
+        <input id="calcExpr" class="calc-display" type="text" inputmode="none" autocomplete="off" spellcheck="false" placeholder="0" aria-label="Calculator expression">
+        <div id="calcResult" class="calc-result" aria-live="polite"></div>
+        <div class="calc-keys">
+          <button type="button" class="fn" data-k="C">C</button><button type="button" class="fn" data-k="(">(</button><button type="button" class="fn" data-k=")">)</button><button type="button" class="fn" data-k="⌫" aria-label="Backspace">⌫</button>
+          <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" class="op" data-k="÷">÷</button>
+          <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" class="op" data-k="×">×</button>
+          <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" class="op" data-k="−">−</button>
+          <button type="button" data-k="0">0</button><button type="button" data-k=".">.</button><button type="button" class="fn" data-k="%">%</button><button type="button" class="op" data-k="+">+</button>
+          <button type="button" class="eq" data-k="=">=</button>
+        </div>
+              </div>
+    </div></div>
+    <button type="button" id="tankFab" class="tank-fab" data-tank-save hidden aria-label="Save tank condition"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h11l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/></svg><span>Save</span></button>
+    <div id="tankLeaveModal" class="modal" hidden><div class="modal-card calc-card"><div class="modal-head"><h3>Save tank condition?</h3></div><p class="muted">The tank condition has changed since you opened this tab. Save it before moving on?</p><div class="button-row wrap"><button type="button" class="primary" data-leave-choice="save">Save &amp; continue</button><button type="button" class="ghost" data-leave-choice="discard">Continue without saving</button><button type="button" class="ghost" data-leave-choice="stay">Stay here</button></div></div></div>
+    <div id="maxFillModal" class="modal" hidden><div class="modal-card calc-card"><div class="modal-head"><h3>Maximum tank storage</h3><button class="ghost" data-close-modal="maxFillModal" aria-label="Close">✕</button></div>
+      <p class="muted">What is your company's maximum storage in tanks, in percent of tank capacity? This is used to compute the proposed bunker / replenish quantity.</p>
+      <div class="field"><label>Maximum fill (%)<input id="maxFillInput" type="number" inputmode="decimal" min="50" max="100" step="1" placeholder="e.g. 85 or 90"></label></div>
+      <div class="calc-foot"><button type="button" id="maxFillSkip" class="ghost">Use 85% for now</button><button type="button" id="maxFillSave" class="primary">Save</button></div>
+    </div></div>
+    <div id="planBunkerModal" class="modal" hidden><div class="modal-card pb-card" role="dialog" aria-modal="true" aria-labelledby="pbTitle"><div class="modal-head"><h3 id="pbTitle">Plan a bunkering</h3><button class="ghost" data-close-modal="planBunkerModal" aria-label="Close">✕</button></div>
+      <p class="muted pb-intro">Choose the bunkering port. The planner works out how much fuel oil, diesel oil and lube oil to take, tank by tank, to cover the voyage plus reserve — and updates as you change anything below.</p>
+      <div class="pb-form">
+        <div class="field pb-wide"><label>Bunkering port<select id="pbPort" aria-label="Bunkering port"></select></label></div>
+        <div class="field pb-other pb-wide" hidden><label>Port name<input id="pbName" list="defaultPorts" placeholder="Select or type a port" autocomplete="off"></label></div>
+        <div class="field pb-other pb-wide" hidden><div class="pos-row"><label class="pos-name">Arrival date &amp; time (local)<input id="pbWall" type="datetime-local"></label><label class="pos-offset">UTC offset<select id="pbOffset" aria-label="UTC offset of the bunkering port"></select></label></div></div>
+        <div class="field pb-other" hidden><label>Stay in port (hours)<input id="pbStay" type="number" inputmode="decimal" min="0" step="1"></label></div>
+        <div class="field pb-wide"><label>Cover the voyage until<select id="pbUntil" aria-label="Cover the voyage until"></select></label></div>
+        <div class="field"><label>Extra margin (%)<input id="pbMargin" type="number" inputmode="decimal" min="0" max="50" step="1" placeholder="0"></label></div>
+        <label class="check pb-check"><input type="checkbox" id="pbFill"> Fill to the maximum tank fill (<span id="pbFillPct">85</span> %)</label>
+      </div>
+      <details id="pbCompareBox" class="pb-compare"><summary>Compare ports</summary><div id="pbCompare"></div></details>
+      <div id="pbResults" class="pb-results" aria-live="polite"></div>
+      <div class="pb-foot"><button type="button" id="pbApply" class="secondary"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><span>Use on Bunkering tab</span></button><button type="button" id="pbExport" class="primary"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Export DOCX</span></button><button type="button" class="ghost" data-close-modal="planBunkerModal">Close</button></div>
+    </div></div>
+    <div id="alertsModal" class="modal" hidden><div class="modal-card"><div class="modal-head"><h3>Planning alerts</h3><button class="ghost" data-close-modal="alertsModal" aria-label="Close">✕</button></div>
+      <p class="muted why-hint">Tap an alert to jump to where it comes from and see how to correct it.</p><div id="alerts"></div></div></div>
+    <div id="whyModal" class="modal" hidden><div class="modal-card calc-card why-card"><div class="modal-head"><h3 id="whyTitle">How this is calculated</h3><button class="ghost" data-close-modal="whyModal" aria-label="Close">✕</button></div>
+      <div id="whyValue" class="why-value"></div><ol id="whySteps" class="why-steps"></ol><p class="muted why-foot">Planning figures from the values you entered in Setup, Tanks and Voyage.</p></div></div>
+    <div id="aboutModal" class="modal" hidden><div class="modal-card"><div class="modal-head"><h3>About Bunker Pilot</h3><button class="ghost" data-close-modal="aboutModal" aria-label="Close">✕</button></div><p><strong>Version <span id="aboutVersion">1.62</span></strong></p><p>Program design and creator: <strong>CE Noel M. Tobongbanua</strong> — Chief Marine Engineer, Mechanical Engineer, Maritime Instructor. Owner/developer of the <strong>e-ORB Marine</strong> mobile application, and other maritime software and training tools.</p><p>The app is designed to support shipboard engineers, chief engineers, marine engineering students, cadets, maritime instructors and technical personnel with practical bunker, ROB, tank, consumption and voyage-planning workflows.</p><p class="muted">The calculator supports planning and documentation. It does not replace the vessel's approved procedures, SMS, tank calibration tables, bunker documentation, maker instructions or Flag/Class requirements.</p><details class="fold flat" open><summary>Revision history</summary><ul class="help-steps" id="revisionHistory">
+      <li><strong>v1.62</strong> — Plan a bunkering: compare all ports side by side, the latest plan is added to the Word voyage report; choose the grade and sulphur, type your own quantity per tank, and “Use on Bunkering tab” to write the plan into that port’s bunkering entry. Home: new “Plan a bunkering” button. Pick any port (on the route, or any other port with its arrival date and time) and the app works out the fuel oil, diesel oil, cylinder oil and ME / GE system oil to bunker — required quantity, quantity to order, and tank-by-tank loading with the port, ETA/ETD and the figures behind it — in a pop-up with a Word (.docx) export.</li>
+      <li><strong>v1.61</strong> — “This port is in an ECA/SECA” (with the ECA line distances and required sulphur at engine inlet) moved from the Ports tab to the top of each port card on the ECA/SECA tab.
+      <li><strong>v1.60</strong> — Bunkering plan form finished: tanks with no density are reported when exporting, long tank names shrink to fit, and Word exports are now compressed (a multi-port form is ~50x smaller).
+      <li><strong>v1.59</strong> — New “Bunkering plan form” export (Results tab): a Word copy of form S-082000-03FRM (Bunker/Internal Transfer Plan &amp; Result), one page per port with planned fuel or diesel bunkering, pre-filled from the plan.
+      <li><strong>v1.58</strong> — Tanks tab: the “Present tank graphs” are removed from the Tank condition report card (too crowded).
+      <li><strong>v1.57</strong> — New “Lub. oil replenishment form” export (Results tab): a Word copy of form S-082001-02FRM, one page per port with planned lube-oil replenishment, pre-filled from the plan.
+      <li><strong>v1.56</strong> — Bunkering tab: the “ECA in / ECA out” tags and the “Lube oil in drums on board now” box are removed. Tanks tab: the highlighted Tank condition report card now shows live fuel oil, diesel and lube oil tank graphs below the condition date &amp; time.</li>
+      <li><strong>v1.55</strong>  Word report: the default file name is now &ldquo;Bunker Pilot - vessel name - date&rdquo; and &ldquo;Route stops&rdquo; is now &ldquo;Number of ports&rdquo;. Ports tab: new &ldquo;This port is in an ECA/SECA&rdquo; question with the distance from the previous port to the ECA line, the distance from the ECA line to the port, the distance back to the line when leaving, and the required sulphur at engine inlet (%). The changeover to low-sulphur fuel is completed before the vessel crosses the ECA line; after it clears the line, the changeover back to higher-sulphur fuel is timed with the FOBAS calculation to the required sulphur. The ECA/SECA tab now follows the Ports tab.</li>
+      <li><strong>v1.54</strong> — Tanks tab: a highlighted “Tank condition report” title now sits above the Condition date &amp; time.</li>
+      <li><strong>v1.53</strong> — “Noon report ROB” is now called “Logbook ROB” (Tanks tab card, Home comparison table, explanations, tour and Word/PDF export). The “Date of noon report entry” field keeps its name.</li>
+      <li><strong>v1.52</strong> — Home: the “Entering an ECA/SECA” card now also shows the planning time of the switch back (e.g. LSMGO → VLSFO) for the next planned ECA/SECA exit.</li>
+      <li><strong>v1.51</strong> — Floating Save button now also on Setup, Ports, Bunkering and ECA/SECA (commits the field you are editing, saves, and re-runs every calculation); saving a tank condition shows a confirmation. Home: Present position card, Stops/Duration/Alerts/Next port tiles and the Next port card removed; Tank ROB header shows a fold-icon hint with “in service” at the far right and no point/ETA text; swiping the Tank ROB card changes the selected port in the Route summary and every card below. ECA/SECA: the “vessel leaves an ECA” data defaults to what was entered for “vessel enters an ECA” until you edit it.</li>
+      <li><strong>v1.50</strong> — Load demo now uses MV Vessel: Kainan → Kinuura → Singapore, FO 13.2 / 3.5 and DO 0.1 MT/day, the noon report ROB and tank capacities/ROB you supplied, today’s noon as the noon report date, and FO 430 MT / DO 30 MT bunkered at Singapore.</li>
+      <li><strong>v1.49</strong> — ECA/SECA tab: ports with an ECA/SECA changeover are emphasised like the Bunkering tab ports (cyan edge stripe, tint and “ECA in / ECA out” tags). Results table: the Bunkering / ECA in / ECA out tags under the port name are stacked in a column.</li>
+      <li><strong>v1.48</strong> — Tanks tab: a floating Save button now stays on screen while you scroll, and leaving the tab after changing the tank condition asks whether to save first (nothing is asked if nothing changed). The old Save tank condition button at the bottom is removed (the saved list stays). The Bunker tab icon is now an oil drop over a bunker barge hull.</li>
+      <li><strong>v1.47</strong> — Home: “Noon report ROB vs Actual tank ROB” is now a compact table (Product · Noon report · Actual · Difference) instead of five cards. Tap a row for the calculation.</li>
+      <li><strong>v1.46</strong> — Dashboard route summary: the ETA date under each port is removed and the Bunkering / ECA in / ECA out tags are smaller. The Full route table moved from the Dashboard into the Results tab and is combined with the results table (ETA/ETD, steaming days, port stay, distance, speed, sea and port consumption, then ROB per fuel); the tags now sit under the port name and the # and Port columns stay fixed without text overlapping when you scroll sideways. Results: “Total consumption” label added above the totals.</li>
+      <li><strong>v1.45</strong> — Tanks: “Now (local)” is now “Today (local)” and the UTC offset sits to the right of Condition date &amp; time; the Noon report ROB date has its own UTC offset beside it; the tank group total shows just “Pumpable ROB”. Setup: GE system oil has one consumption box for sea, port and anchor/drift; ME system oil and cylinder oil have no port or anchor/drift consumption; reserve/day now defaults to the At sea/day rate.</li>
+      <li><strong>v1.44</strong> — Bunkering tab: “Lube oil in drums on board now” moved below the port cards. Home: the port details (ETA, ETD, port stay, distance, speed, steaming days and sea / port consumption) are now their own card above Route summary; Tank ROB is now a separate card below it that folds itself when you change tabs; the unpumpable values are removed from Tank ROB; the Sulphur change tag now sits to the right of the Bunkered tag with black text for contrast.</li>
+      <li><strong>v1.43</strong> — Ports with bunkering are highlighted amber and ports with an ECA/SECA changeover cyan (both marks if a port has both) on the Bunkering tab and in the Dashboard route summary. The Dashboard “Bunkering required” card now also lists planned fuel and diesel bunkering, not only lube oil.</li>
+      <li><strong>v1.42</strong> — Bunkering tab: lube oil can be received in bulk (straight into the storage tank) or in drums (kept aboard as drum stock and pumped by hand into the designated tank(s) later, at the same or a later port; opening drum stock can be entered at the top of the tab). Fuel, diesel and lube oil can also be entered per tank first — the Bunker quantity box then shows the computed total.</li>
+      <li><strong>v1.41</strong> — Bunkering tab (fuel and diesel oil): each tank’s bunker-quantity box now shows the tank’s percentage by volume after bunkering (with m³ / capacity m³), updating as you type and turning amber/red above the maximum fill / capacity; the tank-condition bar graphs now show the storage tanks only (settling, service and support tanks are no longer listed). Tanks tab: a settling, service or support tank with no sulphur entered now takes the sulphur of the storage tank being consumed (Sequence 1 at the start) — storage → settling → service — instead of the grade default; the box shows “same as storage” and follows when that tank’s sulphur is edited; an entered value is kept. Tank cards (fuel and diesel): the Density box now sits directly below Present ROB, with Unpumpable and Pumpable ROB stacked on its right and “Enter ROB as” moved to the end of the fields. Number fields: a field that shows 0 is now cleared the moment you tap into it, so you can type the new value straight away without deleting the zero first (if you leave without typing, the 0 comes back). Dashboard Tank ROB: each tank row now shows only the tank name beside the ETA/ETD bar graphs, so names are no longer cut off. Fuel type with sulphur, the unpumpable quantity, and — at a bunkering port — the “Bunkered +qty” tag and the sulphur change (“Sulphur before → after %”) sit in one line below the bars. Guide me updated: the tour now has 12 steps. The noon report step explains that the noon report date and ROB are kept with the saved voyage, a new step 6 explains why Save tank condition must be tapped after the tank data is entered (and that the status turns amber when tanks change afterwards), the tank details step reminds you to update the teal-outlined sounding fields, and the final step stresses saving the voyage (noon report, tanks and plan) again after any change.</li>
+      <li><strong>v1.40</strong> — Sulphur: when no sulphur is entered, VLSFO defaults to 0.5 % and LSMGO to 0.1 % (tanks and bunkers); after each bunkering the tank’s new sulphur is auto-computed and shown on the Dashboard (Tank ROB, “S before → after”). VLSFO may now be bunkered into a tank holding only its unpumpable quantity, and that quantity is included in the sulphur blend. The Dashboard Tank ROB now also shows the unpumpable value per tank and per group. Add tank: the “Enter capacity &amp; ROB by” choice is removed (new fuel/diesel tanks are set up by volume; ROB can still be switched to MT on the tank card). Tank cards: the “UPDATE” tag now sits beside the field name instead of on its own line, so the fields use less vertical space. Tanks tab: each tank shows its Pumpable ROB (present ROB − unpumpable) and each group header shows the total ROB minus the unpumpable; the Capacity box moved to the right of Tank role; fuel/diesel tanks can enter the present ROB directly in MT (“Enter ROB as: Weight (MT)”) instead of volume and temperature; “Corrected GOV” is now “Corrected Volume”. Tanks tab: the Noon report ROB card is emphasised (gold frame, glow, larger title and figures). A Sulphur (% m/m) field now sits beside Fuel type on every fuel and diesel tank and beside Fuel type on each Bunkering entry; when a bunker with a stated sulphur is loaded into a tank, the tank’s sulphur is auto-blended by mass (shown on the Tanks tab as “After planned bunkering” and in the Route summary tank list). Intro screen icon made smaller. ECA/SECA tab: the “Sulphur at engine inlet vs time” graph now runs to 40 h from switch-over (was 20 h), with grid lines every 5 h. Noon Report ROB card (noon report date and Fuel / Diesel / Cylinder / ME system / GE system figures) moved from Setup to the top of the Tanks tab. Tanks tab: the Condition date &amp; time (with its UTC offset / port) moved to the top of the tab; Save tank condition stays below the tank list. Setup: the “Different consumption rate inside an ECA/SECA” check box under Diesel Oil now sits at the left. Home: the route detail block title “Tank ROB at ETA → ETD” is now “Tank ROB”; Bunkering required is unchanged.</li>
+      <li><strong>v1.39</strong> — Tanks tab, Save tank condition: the date and time is now entered in local time instead of UTC, with a UTC offset beside it. Choose the offset directly, or switch to “Port name” and pick a port — its UTC offset is detected automatically for the chosen date (daylight saving included). Saved conditions show the local time with its offset (and port), and older saved ones open as local time at UTC+0:00. Layout: the date, time and offset inputs no longer squeeze or overlap each other on narrow phones and tablets.</li>
+      <li><strong>v1.38</strong> — Setup: the noon report date is now entered in local time instead of UTC. The label, the “Today · 12:00 local” button, the date chips on Setup and the Dashboard, the status text and the Word report all show local time. A new UTC offset field sits beside Present position; the app uses it to convert the local noon report date into the start point of the ETA/ETD calculation. Plans saved before this version are opened with their old date as local time at UTC+0:00, so nothing moves.</li>
+      <li><strong>v1.37</strong> — Tanks tab: the “Group” input is removed from every tank (a tank’s group is already set by the section it sits in). The inputs that change with every sounding — Density, Corrected GOV (volume), Observed temperature, and Present ROB for tanks entered by weight — are outlined in teal with an UPDATE tag. New “Save tank condition” panel below the tank list: choose the date and time (UTC, or tap Now), save, and the app keeps the density, volume, temperature and ROB of every tank under that stamp. It shows whether anything has changed since the last save, lists the saved conditions, and any of them can be restored or deleted (both ask first).</li>
+      <li><strong>v1.36</strong> — Setup: the “Date of noon report entry (UTC)” field, with its “Today · 12:00 UTC” button, moved into the Noon report ROB card so the date and the reported ROB figures are entered together. It is no longer shown in the vessel details card above. Nothing else changes: the date still sets the ETA/ETD start point and appears on the Dashboard and in the Word report.</li>
+      <li><strong>v1.35</strong> — ECA/SECA tab: choosing Scrubber (EGCS) now runs the same FOBAS mixing calculation as the fuel changeover. The change-over from/to fuel, sulphur values, safety margin and the Main Engine / Aux. Engine / Boiler rate and quantity (t or litres) are all entered, and you get the same duration, start and finish times, vessel positions, per-system cards and sulphur-vs-time chart. The Dashboard card, port summary and Word report label the method as Scrubber (EGCS).</li>
+      <li><strong>v1.34</strong> — ECA/SECA litres entry now uses the density entered on the Tanks tab instead of its own density field. For the fuel in the service system (the “change over from” fuel when entering, the fuel in use when leaving) the app takes the density of the matching Fuel Oil or Diesel Oil tanks (ROB-weighted if several) and converts t = L × density ÷ 1000. The density used is shown under the computed tonnes, and the figure follows any later density change on the Tanks tab. If no tank has a density yet, the app says so instead of assuming one.</li>
+      <li><strong>v1.33</strong> — The bottom navigation bar now floats above the bottom edge of the screen as a pill with fully rounded ends (phones and landscape phones); the active tab is highlighted with a pill, and the page, alert guide and tour chip keep clear of it. Bar graphs use distinct product colours again: Fuel Oil red, Lube oil (cylinder, ME system, GE system) yellow, Diesel Oil pink. Tanks 90%+ full keep their colour with an amber rim; over-full tanks show red/dark stripes so they cannot be mistaken for a Fuel Oil bar.</li>
+      <li><strong>v1.32</strong> — The top-left title on the Tanks tab now reads “Tank Condition”. ECA/SECA tab: each system (Main Engine, Aux. Engine, Boiler) can now take its service system quantity in litres. Choose “Volume (L)”, enter the litres and the fuel density (default 0.95 t/m³), and the app converts it to tonnes automatically (t = L × density ÷ 1000) and uses it in the changeover calculation. The unit, litres and density are remembered and suggested for the next changeover.</li>
+      <li><strong>v1.31</strong> — Folds close themselves again. Every foldable block (tank, port, ECA and bunkering cards, per-port consumption overrides, the info panels and ignored alerts) now returns to its closed position when you move to another tab (once the screen has slid away, so it is closed when you come back) and when it has been left open and untouched for 5 minutes. A fold you are using stays open: tapping, typing or scrolling past it keeps it open, and nothing closes while a field inside it is being edited or while you are actively scrolling. The Dashboard blocks that start expanded (Tank ROB at ETA→ETD, route table on wide screens) are left as you set them.</li>
+      <li><strong>v1.30</strong> — Noon report date on the Noon report ROB cards. The “Date of noon report entry (UTC)” from Setup now appears at the top of the Noon report ROB card on Setup and above the Noon report ROB vs Actual Tank ROB cards on the Dashboard, and updates as you change it. New “Today · 12:00 UTC” button under the date field sets today’s date (UTC) with the noon time 12:00 in one tap; the date can still be typed or picked manually.</li>
+      <li><strong>v1.29</strong> — Chunk 6: tab slide transition. Switching tabs now slides the screens sideways over 500 ms: moving to a tab further along the nav slides the new screen in from the right (old one leaves left), moving back reverses it. Each tab keeps its scroll position, a quick second tap finishes the first slide immediately, and the slide is skipped when your device is set to reduce motion and during the guided tour.</li>
+      <li><strong>v1.28.1</strong> — Chunk 5 follow-up fix. The ETA and ETD columns in the route tank rows now use the same fixed width in the header and in every row, so values such as “0.00/410.00” and “250.00/410.00” line up row to row instead of drifting by a few pixels.</li>
+      <li><strong>v1.28</strong> — Chunk 5 (final consistency pass) of the premium metallic dark-red redesign. 5A: the Unpumpable field (and every field beside a note such as “≈ MT” or “ASTM 54B/56”) now lines up with its neighbours on the input line on phone, landscape and desktop; the tank name takes its own row on desktop. 5B: leftover flat maroon panels (dashboard ROB cards, route nodes and route detail, tank groups, bunkering cards, save/report blocks, hint toggle, recessed wells and the route table header) now use the same frosted glass / gold-hairline finish as the rest; the intro screen and alert-bell badge no longer use off-palette navy / bright red; ETA and ETD values in the route tank rows no longer run into each other.</li>
+      <li><strong>v1.27</strong> — Chunk 4 of the premium metallic dark-red redesign. 4A (bottom dock): frosted-glass dock with a gold hairline and upward shadow, a soft gold glow behind the active tab, a brighter metallic active marker, glowing active icon and a gold-ringed alerts dot. 4B (Home button + sidebar): the raised Home button is now a gold medallion with a metallic conic ring, a glossy highlight and a gentle pulsing halo while Home is the current tab; the desktop sidebar gets the same glass finish, a gold-edged plan card and a glowing active-item pill.</li>
+      <li><strong>v1.26</strong> — Chunk 3 of the premium metallic dark-red redesign. 3A (form grids): inputs in a row now line up on a shared baseline even when a label wraps, a lone half-width field on phones spans the full row instead of leaving a gap, selects get a gold chevron, labels light up while you edit, and computed values (e.g. Present ROB) sit in a dashed read-out plate. 3B (buttons): every yellow action (Add port, + Tank, move arrows, Use this, Save, calculator =) shares one brushed-gold plate with a pressed state; secondary buttons are frosted glass with a gold hairline; destructive buttons are crimson glass; the calculator keypad and pop-up dialogs get the glass-and-gold treatment; and the sidebar buttons no longer overflow the sidebar.</li>
+      <li><strong>v1.25</strong> — Chunk 2 of the premium metallic dark-red redesign. 2A (header): frosted-glass top bar with a gold hairline, metallic gold-rimmed icon buttons with a pressed state, a lit-gold plate when Hints is on, amber glow when the bell has alerts, and a crimson badge with a gold ring. 2B (lists &amp; bars): numbered route/tank indicators are now glossy gold medallions that glow when their card is open, round glass chevrons, open cards light up with a gold edge, and every progress bar uses one metallic amber→gold fill on a recessed track (warning and overfill states keep their own orange/red).</li>
+      <li><strong>v1.24</strong> — Chunk 1 of the premium metallic dark-red redesign: deeper crimson/burgundy background gradient, oversized compass-rose watermark behind the content, translucent frosted-glass panels and cards with thin gold metallic borders, recessed inset-shadow form inputs, and a warmer gold focus glow.</li>
+      <li><strong>v1.23</strong> — Replaced the Excel export with a Word (.docx) voyage report: tank ROB at ETA/ETD for every port, ETA/ETD dates, noon report vs actual ROB, bunkering requirements (fuel, diesel, lube oils), ECA/SECA changeovers, consumption totals and planning alerts, laid out as proper headings and tables — generated entirely offline, no internet needed.</li>
+      <li><strong>v1.22</strong> — Tanks tab retitled "Present Tank Condition"; Add Tank now lets you choose weight (MT) or volume (m³, with density/ASTM) entry for fuel/diesel tanks. FO settling/service tanks no longer trigger the 85%-fill alert. Dashboard: tapping a bunkered tank under Tank ROB at ETA/ETD now opens that port on the Bunkering tab; Steaming days shows hours too. Diesel Oil can have a separate consumption rate inside an ECA/SECA (Setup), applied automatically between each port's entering/leaving. ECA/SECA tab remembers the last Main Engine/Aux./Boiler rate and quantity you entered, and suggests them next time. Consumption rates and tank capacity/unpumpable are now treated as fixed once set — changing an existing value asks you to confirm.</li>
+      <li><strong>v1.21</strong> — Present ROB for fuel/diesel tanks is now entered as a sounded tank volume (Corrected GOV, m³) and observed temperature, auto-converted to MT using the ASTM/IP/API Petroleum Measurement Tables: Table 54B (Volume Correction Factor) and Table 56 (Weight Correction Factor), against the tank's density. The computed ROB (MT) updates instantly as volume, temperature or density change. Existing tanks keep their previously-entered ROB, back-filled into an equivalent starting volume.</li>
+      <li><strong>v1.20</strong> — Cylinder oil tank names: “Cylinder Oil Drain Tank” removed; “Cyl Oil Storage Tk 1” and “Cyl Oil Storage Tk 2” added. Planning alerts can now be ignored (Ignore button on each alert; ignored alerts leave the list and the count, and can be restored from “ignored alerts” at the bottom). Fixed tank capacity (m³) not registering when the tank’s density had never been set (e.g. after changing its group).</li>
+      <li><strong>v1.19</strong> — Fixed landscape phones getting the desktop layout (nav/menus were unreachable); added a compact landscape tier. Company maximum tank fill moved to the Tanks tab. Setup: removed Position status, "Voyage start" is now "Date of noon report entry" with noon report ROB fields (Fuel, Diesel, Cyl, ME sys, GE sys) below it. Add Tank no longer asks for a group (it's set by which + Tank button you tap). "Voyage" tab renamed to "Ports"; its move-port arrows are now yellow, matching the Tanks tab. Dashboard: Fuel/Lube ROB cards replaced with Noon Report vs Actual Tank ROB, a "Bunkering required" card (port + quantities), and an ECA/SECA-ahead card. ECA/SECA chart: tap a system's name below the chart to isolate its trend line, tap again to show all.</li>
+      <li><strong>v1.18</strong> — Home tab: Tank ROB at ETA→ETD now just says "Fuel Oil (MT)" / "Diesel Oil (MT)" (no VLSFO/HFO or LSMGO/DO suffix); tap a tank there to jump straight to its card on the Tanks tab. Every fold's chevron now turns gold and flips when open, everywhere in the app. Export XLSX is back, alongside Save Voyage under Results.</li>
+      <li><strong>v1.17</strong> — Load demo is now yellow and fills every tank, bunker and reserve within limits (no alerts); new “Clear all entry” button beside it; the Guide me pop-up can be minimized to a small chip and expanded again.</li>
+      <li><strong>v1.16</strong> — Everything now recalculates live as you type (all tabs stay in sync; Recalculate button removed). Tapping a planning alert jumps to the field that causes it and shows how to correct it. Removed the Excel (.xlsx/.xls) exports, JSON backup/restore and the About button from Results.</li>
+      <li><strong>v1.15</strong> — Fixed a bug from the ECA/SECA update that broke touch navigation across the whole app (a removed field was still referenced by the code, which stopped every button/tab from responding); merged the Data tab into Results — exports, Save Voyage and backup/restore now live at the bottom of Results & Export.</li>
+      <li><strong>v1.14</strong> — Top-bar icons show their label when tapped; Help merged into the Hints icon; new Recalculate/Calculator button; manual fuel-type entry (tanks, bunkers, ECA); proposed bunker/replenish quantity per eligible tank with the VLSFO no-mixing rule; fuel type shown under tank names in the ETA/ETD lists; ECA/SECA tab now states the fuel being changed from/to (or scrubber).</li>
+      <li><strong>v1.12</strong> — Bunkering and ECA/SECA changeover are now their own tabs (were folded inside each Voyage port card); Bunkering tab adds Lube Oil Replenishment (in litres) alongside fuel, each with a small ETA/ETD tank-condition bar and ROB/Capacity readout; ECA/SECA tab now shows changeover start AND finish time plus an estimated vessel position for both entering and leaving a control area; Dashboard/Bunkering tank order now follows the order set on the Tanks tab; fixed a bug that made "Save current voyage" always fail with a storage-full message; saved voyages can now also be downloaded individually as a file, and every save now also drops a JSON backup file to your device; fixed the .xls export (previously a zip file mislabelled .xls, which many phones/Excel apps refused to open) by writing a genuine SpreadsheetML .xls; tapping the app icon/logo now opens the credits & version dialog; renamed "Alongside stay" to "Port stay"; guided-tour step 5 now highlights the whole screen and step 6's highlight box is correctly aligned on "Add port".</li>
+      <li><strong>v1.11</strong> — Add Tank now asks tank role and insert position upfront (role first) via a dedicated dialog; fixed the Custom tank-name input being uneditable; tank reorder buttons relabelled "Move tank position up or down", highlighted yellow, and the screen now follows the tank as it moves; darker FO tank-bar red.</li>
+      <li><strong>v1.10</strong> — Renamed to Bunker Pilot with an animated intro screen; VLSFO and HFO consumption can now be tracked separately (Setup: choose VLSFO only / HFO only / Both, with a per-leg "fuel in use" selector on Both); explanation text now lingers for 3 seconds after a field loses focus so an opened dropdown doesn't just hide it.</li>
+      <li><strong>v1.9</strong> — Anchor/drift stay & rate; reorderable ports; ECA/SECA fuel changeover planning (MARPOL Annex VI Reg. 14); Save Voyage Data; guided tour; per-fuel-type bar colours; tank ROB shown ROB/Capacity with per-group totals; tank role next to group; dropdown tank names, UTC offsets; VLSFO/HFO mixing rule; reorderable tanks; reserve/day labels per fuel.</li>
+      <li><strong>v1.8</strong> — Netlify-ready packaging, offline PWA refinements.</li>
+      <li><strong>Earlier</strong> — Initial bunker/ROB/tank/voyage planning release.</li>
+    </ul></details></div></div>
+    <footer>Offline-first engineering planning tool. Verify against actual ROB measurements, tank calibration tables, BDN records, maker instructions, SMS and company procedures.</footer>
+  </main>
+</div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

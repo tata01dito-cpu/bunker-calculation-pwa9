@@ -1,0 +1,1615 @@
+/* ==========================================================================
+   Bunker & ROB Planner v1.8  —  crimson + brass, mobile-first
+   Palette lives in :root so the whole theme can be re-tinted in one place.
+   ========================================================================== */
+:root{
+  --intro-gold:#ffc63a;
+  --ink:#1a070d;         /* page — deep crimson/burgundy base */
+  --deep:#230b14;        /* wells, inputs — recessed maroon */
+  --surface:#2b0f1a;     /* cards */
+  --surface-2:#371526;   /* raised / headers */
+  --glass:rgba(43,15,26,.62);      /* translucent card fill */
+  --glass-strong:rgba(55,21,38,.74);
+  --line:#5c2a3a;
+  --line-soft:#432030;
+  --line-gold:rgba(255,194,58,.3); /* thin metallic gold edge on glass panels */
+  --text:#fdf3ee;
+  --muted:#d7b2bc;       /* pale pink-grey secondary text */
+  --faint:#a9838d;
+  --crimson:#d8132f;
+  --wine:#8f0a1f;
+  --gold:#ffc23a;
+  --gold-2:#ffe08a;
+  --amber:#ff9f1a;
+  --good:#45d69b;
+  --warn:#ff9a3c;
+  --danger:#ff6b7d;
+  --nav-h:60px;
+  --top-h:56px;
+  --sab:env(safe-area-inset-bottom,0px);
+  --sat:env(safe-area-inset-top,0px);
+  font-family:"Segoe UI Variable","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Roboto,Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--top-h) + var(--sat) + 10px);scroll-padding-bottom:calc(var(--nav-h) + var(--sab) + 90px);-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:var(--text);line-height:1.4;background:
+  radial-gradient(120% 60% at 50% 0%,#5c0f24 0%,transparent 60%),
+  radial-gradient(90% 70% at 50% 100%,#3a0a18 0%,transparent 65%),
+  linear-gradient(180deg,#260a16 0%,#170610 55%,#12050b 100%);
+  background-repeat:no-repeat;background-attachment:fixed}
+a{color:inherit;text-decoration:none}
+small{display:block;color:var(--muted);font-size:.76rem}
+.muted{color:var(--muted)}
+code{background:var(--deep);padding:0 .3em;border-radius:4px;font-size:.85em}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+svg.ico{width:20px;height:20px;flex:none}
+
+/* Oversized compass-rose watermark, centered behind the content, blended into the
+   dark crimson backdrop — fixed so it stays put while the page scrolls. */
+.bg-watermark{position:fixed;top:50%;left:50%;width:140vmin;height:140vmin;transform:translate(-50%,-50%);color:#ff2d55;opacity:.05;pointer-events:none;z-index:0;filter:blur(.5px)}
+/* .app-shell and its descendants need to sit above the fixed watermark explicitly,
+   since the watermark is a sibling painted after it in source order only by z-index. */
+.app-shell{position:relative;z-index:1}
+
+/* ---------- buttons ---------- */
+button{font:inherit;border:0;border-radius:10px;padding:.5rem .85rem;min-height:38px;background:var(--gold);color:#2a0a10;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;-webkit-tap-highlight-color:transparent;transition:filter .15s,transform .15s}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.35;cursor:default}
+button svg,button span{pointer-events:none}
+button .ico{width:16px;height:16px}
+button.primary{background:linear-gradient(135deg,#ffd45e,#ff9f1a)}
+button.secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--line)}
+button.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+button.danger{color:#ffb3bd;border-color:#7a2a37}
+button.sm{min-height:32px;padding:.25rem .65rem;font-size:.78rem}
+button.full{width:100%}
+.icon-btn{width:36px;height:36px;min-height:0;padding:0;border-radius:10px;background:var(--surface-2);color:var(--text);border:1px solid var(--line)}
+.icon-btn .ico{width:18px;height:18px}
+.icon-btn.sm{width:32px;height:32px;font-size:1.2rem;line-height:1}
+.icon-btn.accent{background:linear-gradient(135deg,#ffd45e,#ff9f1a);color:#2a0a10;border-color:transparent}
+.icon-btn[aria-pressed="true"]{color:var(--gold);border-color:var(--gold);background:rgba(255,194,58,.12)}
+.button-row{display:flex;gap:8px;align-items:center}
+.button-row.wrap{flex-wrap:wrap}
+
+/* ---------- form controls (deliberately compact) ---------- */
+input,select,textarea{width:100%;height:38px;padding:0 .6rem;border:1px solid var(--line);border-radius:9px;background:var(--deep);color:var(--text);font:inherit;font-size:16px;outline:0;min-width:0;font-variant-numeric:tabular-nums;box-shadow:inset 0 2px 5px rgba(0,0,0,.45),inset 0 0 0 1px rgba(0,0,0,.15)}
+select{padding-right:1.6rem;text-overflow:ellipsis}
+textarea{height:auto;min-height:56px;padding:.45rem .6rem;resize:vertical}
+input::placeholder{color:#7f6670}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:inset 0 2px 5px rgba(0,0,0,.45),0 0 0 3px rgba(255,194,58,.2),0 0 14px rgba(255,194,58,.3)}
+.field{min-width:0}
+.field label{display:flex;flex-direction:column;gap:3px;font-size:.8rem;font-weight:700;color:var(--muted)}
+.big-input{font-weight:800}
+.check{display:flex;align-items:center;gap:7px;font-size:.88rem;color:var(--text)}
+.check input{width:18px;height:18px;padding:0;accent-color:var(--gold)}
+.help{display:none;font-size:.76rem;line-height:1.4;color:var(--faint);margin-top:3px}
+.help-block{display:none}
+body.hints .help{display:block}
+body.hints .help-block{display:block}
+/* Explanation text also appears on demand when the user taps/focuses the field it belongs to,
+   so hints don't have to stay globally on to be discoverable. */
+.field:focus-within>.help{display:block}
+
+/* ---------- navigation: bottom dock on phones ---------- */
+.sidebar{position:fixed;left:0;right:0;bottom:0;z-index:50;height:calc(var(--nav-h) + var(--sab));padding:0 4px var(--sab);display:flex;background:rgba(26,9,16,.94);-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);border-top:1px solid var(--line)}
+.brand,.sidebar-plan,.sidebar-actions,.sidebar-note{display:none}
+.side-nav{display:flex;flex:1;min-width:0}
+.nav-link{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding-top:3px;color:var(--faint);font-size:.66rem;font-weight:700;-webkit-tap-highlight-color:transparent;transition:color .15s}
+.nav-link .ico{width:20px;height:20px}
+.nav-link::before{content:"";position:absolute;top:0;left:24%;right:24%;height:3px;border-radius:0 0 4px 4px;background:var(--gold);box-shadow:0 0 12px 1px rgba(255,194,58,.7);opacity:0;transform:scaleX(.3);transition:opacity .18s,transform .18s}
+.nav-link.active{color:var(--gold)}
+.nav-link.active::before{opacity:1;transform:none}
+.nl-full{display:none}
+.ico-wrap{position:relative;display:grid}
+.nav-dot{position:absolute;top:-2px;right:-5px;width:9px;height:9px;border-radius:50%;background:var(--danger);border:2px solid #1a0910}
+.nav-dot[hidden]{display:none}
+/* Home/Dashboard nav item: raised, larger icon so it reads as the primary/central action,
+   set apart from the rest of the mobile bottom dock (see index.html for its middle position). */
+.nav-home{margin-top:-16px}
+.ico-home-wrap{display:grid;place-items:center;width:50px;height:50px;border-radius:50%;background:linear-gradient(155deg,#ffd97a,#ff9f1a 65%,#e8790a);border:3px solid #1a0910;box-shadow:0 6px 16px rgba(0,0,0,.45),0 0 0 1px rgba(255,194,58,.5);transition:transform .15s}
+.ico-home-wrap .ico{width:25px;height:25px;color:#2a0a10}
+.nav-home:active .ico-home-wrap{transform:scale(.92)}
+.nav-home.active .ico-home-wrap{box-shadow:0 6px 18px rgba(0,0,0,.5),0 0 0 3px rgba(255,194,58,.85)}
+.nav-home::before{display:none}
+.nav-home .nl{font-weight:900;margin-top:1px}
+
+/* ---------- top bar ---------- */
+.content{min-width:0;padding-bottom:calc(var(--nav-h) + var(--sab) + 16px)}
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;min-height:calc(var(--top-h) + var(--sat));padding:calc(6px + var(--sat)) 12px 6px;background:linear-gradient(180deg,rgba(70,8,22,.97),rgba(26,9,16,.95));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top-logo{border-radius:9px;flex:none;box-shadow:0 0 0 1px rgba(255,194,58,.4)}
+.top-title{flex:1;min-width:0}
+.top-title h1{margin:0;font-size:1.02rem;line-height:1.15;letter-spacing:-.005em}
+.top-title p{margin:0;font-size:.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-actions{display:flex;gap:6px;align-items:center}
+.version-badge{display:none;padding:.3rem .6rem;border:1px solid var(--line);border-radius:99px;color:var(--muted);font-size:.68rem;font-weight:800}
+
+/* ---------- layout ---------- */
+.section{padding:10px 10px 0;max-width:1180px;margin:0 auto}
+.section-title{display:none}
+.section-title.has-actions{display:flex;justify-content:flex-end;margin-bottom:8px}
+.section-title.has-actions>div:first-child{display:none}
+.section-title h2{margin:0;font-size:1.4rem}
+.section-subtitle{margin:.2rem 0 0;color:var(--muted);font-size:.82rem}
+.panel{background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(1.2);backdrop-filter:blur(16px) saturate(1.2);border:1px solid var(--line-gold);border-radius:14px;padding:11px;margin-bottom:9px;box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 10px 24px rgba(0,0,0,.28)}
+.panel h3{margin:0;font-size:.95rem}
+.panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.panel-heading .muted{font-size:.78rem}
+.stack{display:flex;flex-direction:column;gap:7px}
+.empty{padding:14px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center;font-size:.85rem}
+.tank-sequence-guide{border-left:3px solid var(--gold)}
+footer{padding:14px 14px 4px;color:var(--faint);text-align:center;font-size:.68rem}
+
+/* folds */
+details.fold>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;list-style:none;font-weight:800;font-size:.85rem}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::after{content:"";flex:none;width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s,border-color .2s;margin-right:3px}
+details.fold[open]>summary::after{transform:rotate(-135deg);border-color:var(--gold)}
+details.fold>*:not(summary){margin-top:8px}
+details.fold.flat{padding:0;border:0;background:none;margin:0}
+details.fold.flat>summary{padding:8px 0;font-size:.8rem;color:var(--muted);justify-content:flex-start}
+details.fold.flat>summary::after{margin-left:auto}
+
+/* ---------- dashboard hero ---------- */
+.hero{position:relative;overflow:hidden;border:0;border-radius:18px;padding:14px;background:radial-gradient(120% 140% at 100% 0,rgba(255,194,58,.22) 0,transparent 45%),linear-gradient(150deg,#a10e26 0%,#5f0716 55%,#2b0a13 100%);box-shadow:0 10px 30px rgba(130,0,25,.35)}
+.hero-star{position:absolute;right:-20px;top:-20px;width:140px;height:140px;color:rgba(255,194,58,.11);pointer-events:none}
+.hero-top{position:relative;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hero-pos{position:relative;display:block;font-size:1.55rem;line-height:1.12;margin:.4rem 0 .1rem;letter-spacing:-.012em}
+.hero .muted{position:relative;margin:.1rem 0 .7rem;font-size:.8rem;color:rgba(255,236,230,.82)}
+.label-mini{font-size:.74rem;color:rgba(255,236,230,.78);font-weight:700}
+.status-pill{padding:.24rem .65rem;border-radius:99px;background:rgba(0,0,0,.32);border:1px solid rgba(255,194,58,.55);color:var(--gold);font-size:.7rem;font-weight:800;white-space:nowrap}
+.status-pill.green{color:#8ff0c6;border-color:rgba(69,214,155,.65)}
+.progress{height:5px;background:rgba(0,0,0,.4);border-radius:9px;overflow:hidden}
+.progress.big{position:relative;height:9px}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:9px;box-shadow:0 0 10px rgba(255,194,58,.45)}
+.meter-foot{position:relative;display:flex;justify-content:space-between;gap:8px;margin-top:5px;font-size:.72rem;color:rgba(255,236,230,.85)}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:9px}
+.kpi{padding:8px 9px;border-radius:12px;background:var(--surface);border:1px solid var(--line-soft);min-width:0}
+.kpi span{display:block;font-size:.74rem;color:var(--muted)}
+.kpi strong{display:block;margin-top:1px;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.kpi strong.bad{color:var(--danger)}
+
+.next-panel{padding:10px 12px}
+.next-panel h3{margin:0 0 4px;font-size:.72rem;color:var(--muted);font-weight:700}
+.next-port{display:grid;grid-template-columns:1fr 1fr;gap:1px 10px}
+.next-port strong{grid-column:1/-1;font-size:1.1rem}
+.next-port span{font-size:.74rem;color:var(--muted)}
+.next-port span:nth-of-type(-n+2){grid-column:1/-1}
+
+.metric-section{margin-bottom:9px}
+.eyebrow{font-size:.76rem;font-weight:700;color:var(--muted)}
+.metric-heading{margin:0 2px 5px}
+.metric-grid-inner,.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.metric-grid{margin-bottom:9px}
+.metric-card{padding:9px 10px;border-radius:12px;background:var(--surface);border:1px solid var(--line-soft);border-left:3px solid var(--gold);min-width:0}
+.metric-label{font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.metric-value{font-size:1.08rem;font-weight:900;margin:.1rem 0 .3rem;font-variant-numeric:tabular-nums}
+.metric-card .progress{height:5px;background:#12070b}
+.metric-foot{margin-top:5px;font-size:.66rem;color:var(--muted);line-height:1.3}
+
+/* route timeline + point details */
+.route-timeline{display:flex;align-items:center;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.route-node{flex:0 0 auto;min-width:96px;max-width:132px;min-height:0;padding:7px 9px;display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;background:var(--surface-2);color:var(--text);border:1px solid var(--line);border-radius:11px;font-weight:600;scroll-snap-align:start}
+.route-node strong{max-width:100%;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.route-node small{font-size:.66rem}
+.route-node-index{font-size:.66rem;font-weight:800;color:var(--gold)}
+.route-node.current{border-color:rgba(69,214,155,.7)}
+.route-node.next{border-color:#b9576b}
+.route-node.selected{background:linear-gradient(160deg,#63122a,#2d1723);border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.route-line{flex:0 0 14px;height:2px;background:linear-gradient(90deg,var(--wine),var(--gold))}
+.route-point-details{padding:10px;border:1px solid var(--line);border-radius:13px;background:var(--deep);margin-bottom:8px}
+.route-detail-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.route-detail-head h3{margin:0;font-size:1.08rem}
+.pd-nav{display:flex;gap:6px}
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.detail-kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:6px}
+.detail-grid>div,.detail-kpi{min-width:0;padding:7px 8px;border-radius:10px;background:var(--surface);border:1px solid var(--line-soft)}
+.detail-grid span,.detail-kpi span{display:block;font-size:.72rem;color:var(--muted)}
+.detail-grid strong,.detail-kpi strong{display:block;margin-top:1px;font-size:.8rem;font-variant-numeric:tabular-nums}
+.consumption-detail .detail-kpi strong{font-size:.72rem;line-height:1.35}
+.detail-note{margin:.6rem 0 0;font-size:.8rem}
+
+/* Tank ROB at ETA → ETD: one slim row per tank, values + 3px bars, grouped by product */
+.rt-title{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:11px 0 5px}
+.rt-title h4{margin:0;font-size:.82rem}
+.rt-legend{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;color:var(--muted)}
+.svc-dot{display:inline-block;flex:none;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.rt-list{display:flex;flex-direction:column;gap:6px}
+.rt-group{border:1px solid var(--line-soft);border-radius:10px;overflow:hidden;background:var(--surface)}
+.rt-head,.rt-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;padding:0 9px}
+.rt-group>summary.rt-head{height:auto;min-height:22px;padding-top:4px;padding-bottom:4px;cursor:pointer;list-style:none;user-select:none;position:relative;padding-right:26px}
+.rt-group>summary.rt-head::-webkit-details-marker{display:none}
+.rt-group>summary.rt-head::after{content:'';position:absolute;right:9px;top:50%;width:6px;height:6px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);transition:transform .15s ease}
+.rt-group[open]>summary.rt-head::after{transform:translateY(-30%) rotate(-135deg)}
+.rt-head{height:22px;background:var(--surface-2);font-size:.74rem;font-weight:700;color:var(--muted)}
+.rt-head span:not(:first-child){text-align:right}
+.rt-row{padding-top:6px;padding-bottom:6px;min-height:30px;border-top:1px solid var(--line-soft);font-size:.8rem}
+.rt-row[data-goto-tank],.rt-row[data-goto-bunker-port]{cursor:pointer}
+.rt-row[data-goto-tank]:hover,.rt-row[data-goto-tank]:focus-visible,.rt-row[data-goto-bunker-port]:hover,.rt-row[data-goto-bunker-port]:focus-visible{background:rgba(255,255,255,.05)}
+.rt-row[data-goto-tank]:focus-visible,.rt-row[data-goto-bunker-port]:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.tank-jump{animation:tankJumpFlash 1.6s ease-out}
+@keyframes tankJumpFlash{0%,35%{box-shadow:0 0 0 2px var(--gold),0 0 22px rgba(255,194,58,.55)}100%{box-shadow:none}}
+.rt-row.tank-active{background:linear-gradient(90deg,rgba(255,194,58,.13),transparent 70%)}
+.rt-name{display:flex;align-items:center;gap:6px;min-width:0}
+.rt-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rt-cell{display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:0}
+.rt-cell b{align-self:flex-end;font-weight:700;font-variant-numeric:tabular-nums;font-size:.74rem;white-space:nowrap}
+.hbar{width:100%;height:5px;border-radius:5px;background:#12070b;overflow:hidden}
+.hbar span{display:block;height:100%;border-radius:5px}
+.hbar.over span{background:var(--danger)!important}
+.rt-group-total{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 9px;background:var(--surface-2);border-top:1px solid var(--line-soft);font-size:.78rem;color:var(--muted)}
+.rt-group-total strong{color:var(--text);font-variant-numeric:tabular-nums}
+.rt-group-bunker{padding:2px 9px 8px;font-size:.74rem;color:var(--gold);background:var(--surface-2)}
+
+/* tables */
+.table-wrap{overflow:auto;-webkit-overflow-scrolling:touch}
+.panel.table-wrap{padding:0}
+.table-wrap table{width:100%;min-width:max-content;border-collapse:collapse;font-size:.8rem}
+.table-wrap th,.table-wrap td{padding:.45rem .55rem;border-bottom:1px solid var(--line-soft);text-align:left;vertical-align:top;white-space:nowrap}
+.table-wrap th{position:sticky;top:0;background:var(--surface-2);color:var(--muted);font-weight:700;z-index:1}
+.table-wrap td:nth-child(2),.table-wrap th:nth-child(2){position:sticky;left:0;background:var(--surface);box-shadow:1px 0 0 var(--line-soft)}
+.table-wrap th:nth-child(2){background:var(--surface-2);z-index:3}
+.table-wrap td:nth-child(2){z-index:2}
+.route-summary .current-row td{background:rgba(69,214,155,.07)}
+.route-summary .next-row td{background:rgba(255,194,58,.06)}
+.route-summary tr[data-route-point]{cursor:pointer}
+.warn-text{color:var(--warn);font-weight:800}
+
+/* badges / tags / alerts */
+.tag{display:inline-flex;align-items:center;padding:.18rem .5rem;border-radius:99px;border:1px solid var(--line);color:var(--gold);font-size:.72rem;font-weight:800;white-space:nowrap}
+.tag[hidden]{display:none}
+.tag.dim{opacity:.55;border-style:dashed}
+.cross-tab-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+.cross-tab-links .tag{cursor:pointer}
+.cross-tab-links .tag:active{transform:scale(.97)}
+.badge{display:inline-flex;padding:.12rem .45rem;border-radius:99px;background:var(--surface-2);color:var(--muted);font-size:.72rem;font-weight:800}
+.badge.green{color:#8ff0c6;background:rgba(69,214,155,.14)}
+.badge.yellow{color:var(--gold);background:rgba(255,194,58,.14)}
+.badge.red{color:#ffb3bd;background:rgba(255,107,125,.16)}
+.alert{padding:10px 12px;border-radius:12px;margin-bottom:9px;font-size:.84rem;border:1px solid var(--line)}
+.alert.good{background:rgba(69,214,155,.09);border-color:rgba(69,214,155,.4)}
+.alert.warning{background:rgba(255,154,60,.1);border-color:rgba(255,154,60,.5);color:#ffe0bd}
+.alert ul{margin:.4rem 0 0;padding-left:1.1rem}
+
+/* ---------- setup ---------- */
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.f-full{grid-column:1/-1}
+.rate-card{padding:10px;border-left:3px solid var(--crimson)}
+.rate-card.is-lube{border-left-color:var(--gold)}
+.rate-top{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.rate-top .field{flex:1}
+.rate-top .tag{margin-top:9px}
+.rate-card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.rate-card-grid .field label{font-size:.72rem}
+.rate-card>.help{margin-top:6px}
+
+/* ---------- tanks & route cards (accordions) ---------- */
+#tankList{display:flex;flex-direction:column;gap:2px}
+.tank-group{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.tg-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:4px 2px 0}
+.tg-head strong{font-size:.92rem}
+.tg-head small{font-size:.72rem}
+/* Draw the eye to "+ Tank" on each group — the usual next step when setting up tanks. */
+.tg-head [data-add-tank]{background:#ffc61a;border-color:#ffc61a;color:#241300;font-weight:800}
+.tg-head [data-add-tank]:hover{background:#ffd54f;border-color:#ffd54f}
+.item-card{border:1px solid var(--line-gold);border-radius:12px;background:var(--glass-strong);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);overflow:hidden;box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 6px 16px rgba(0,0,0,.24)}
+.tank-card{border-left:3px solid var(--gold)}
+.tank-card.fixed-tank{border-left-color:var(--faint)}
+.route-card{border-left:3px solid var(--crimson)}
+.tank-sum,.route-sum{display:grid;align-items:center;gap:2px 10px;padding:9px 11px;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
+.tank-sum{grid-template-columns:auto 1fr auto}
+.route-sum{grid-template-columns:auto 1fr auto}
+.tank-sum::-webkit-details-marker,.route-sum::-webkit-details-marker{display:none}
+.seq-chip,.step{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.76rem;font-weight:900}
+.seq-chip{background:var(--gold);color:#2a0a10}
+.seq-chip.fixed{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.step{background:var(--crimson);color:#fff}
+.tk-main,.rs-main{display:flex;flex-direction:column;min-width:0}
+.tk-title,.rs-port{font-weight:800;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tk-qty,.rs-meta{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-side{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.74rem;font-variant-numeric:tabular-nums}
+.tk-side .ico{width:16px;height:16px;transition:transform .2s}
+details[open]>summary .tk-side .ico{transform:rotate(180deg)}
+/* Every fold chevron (however it's wrapped) rotates and highlights gold when its <details> is open,
+   so the icon itself signals "tap to fold" vs "tap to unfold". */
+.fold-chev{color:var(--muted);transition:transform .2s ease,color .2s ease;flex:none}
+details[open]>summary .fold-chev{transform:rotate(180deg);color:var(--gold)}
+summary:hover .fold-chev,summary:focus-visible .fold-chev{color:var(--text)}
+details[open]>summary:hover .fold-chev,details[open]>summary:focus-visible .fold-chev{color:var(--gold)}
+.tk-bar{grid-column:1/-1;margin-top:5px}
+.tank-bar{height:5px;border-radius:5px;background:#12070b;overflow:hidden}
+.tank-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--amber),var(--gold));border-radius:5px}
+/* Fuel-type colour coding, shared by horizontal bars (tank cards, dashboard ROB cards) and the
+   vertical ETA/ETD bars: FO = light red, DO = pink, lube oils (LO) = yellow. */
+.tank-bar.bar-fo span,.progress.bar-fo span{background:linear-gradient(90deg,#a6231c,#6b0f0a);box-shadow:0 0 10px rgba(122,20,12,.5)}
+.tank-bar.bar-do span,.progress.bar-do span{background:linear-gradient(90deg,#f8a8c9,#ef5da0);box-shadow:0 0 10px rgba(239,93,160,.4)}
+.tank-bar.bar-lo span,.progress.bar-lo span{background:linear-gradient(90deg,#ffe08a,#ffc61a);box-shadow:0 0 10px rgba(255,198,26,.4)}
+.hbar.bar-fo span{background:#7a140c}
+.hbar.bar-do span{background:#ef5da0}
+.hbar.bar-lo span{background:#ffc61a}
+.tank-bar.warn span{background:linear-gradient(90deg,var(--warn),#ff6a3c)}
+.tank-bar.danger span{background:var(--danger)}
+/* Over the 85% recommended max-load fill level (feedback item: blinking bargraph warning) */
+.tank-bar.over85 span,.hbar.over85 span{background:var(--warn)!important;animation:over85Blink 1s ease-in-out infinite}
+@keyframes over85Blink{0%,100%{opacity:1}50%{opacity:.35}}
+.blink-warn{animation:blinkWarnBg 1.1s ease-in-out infinite}
+@keyframes blinkWarnBg{0%,100%{background:rgba(255,154,60,.1)}50%{background:rgba(255,154,60,.32)}}
+.tk-fueltype{color:var(--gold);font-weight:800}
+.proposed-qty{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding:8px 10px;border:1px dashed var(--line);border-radius:9px;font-size:.76rem;color:var(--muted)}
+.proposed-qty strong{color:var(--text)}
+.tank-ineligible{opacity:.45}
+.tank-ineligible input{pointer-events:none}
+.bunker-live:empty{display:none}
+.tank-body,.route-body{padding:10px 11px 11px;border-top:1px solid var(--line-soft)}
+.tank-fields{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.tank-fields>.field:nth-child(1),.tank-fields>.field:nth-child(2){grid-column:span 3}
+.tank-fields>.field:nth-child(3){grid-column:span 6}
+.tank-fields>.field:nth-child(n+4){grid-column:span 2}
+.manual-name-input{margin-top:6px}
+.manual-name-input[hidden]{display:none}
+.tank-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;align-items:end}
+.fixed-rob-note{padding:6px 9px;border-radius:9px;background:var(--deep);border:1px dashed var(--line)}
+.fixed-rob-note strong{font-size:.74rem;color:var(--gold)}
+.tank-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tank-foot .check{flex:1 1 auto}
+.sequence-actions{display:flex;gap:6px}
+/* Move-tank-position buttons draw the eye like the "+ Tank" button, since they're a primary action here */
+.sequence-actions [data-move-order],.sequence-actions [data-move-route]{background:#ffc61a;border-color:#ffc61a;color:#241300}
+.sequence-actions [data-move-order]:hover,.sequence-actions [data-move-route]:hover{background:#ffd54f;border-color:#ffd54f}
+.sequence-actions [data-move-route][disabled]{background:var(--surface-2);border-color:var(--line);color:var(--faint);opacity:.5}
+.tank-foot .move-label{flex:1 1 auto;min-width:120px}
+.route-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.route-grid .rg-full{grid-column:1/-1}
+.route-grid .rg-half{grid-column:span 3}
+.stay-summary{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;padding:6px 9px;border-radius:9px;background:var(--deep);font-size:.74rem;color:var(--muted)}
+.stay-summary strong{color:var(--text);font-variant-numeric:tabular-nums}
+.route-body details.fold.flat{margin-top:6px;border-top:1px solid var(--line-soft)}
+.bunker-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.bunker-box{padding:9px;border:1px solid var(--line-soft);border-radius:10px;background:var(--deep)}
+.bunker-section-title{margin:16px 0 8px;font-size:.85rem}
+.bunker-section-title:first-child{margin-top:0}
+.bunker-product{padding:10px;border:1px solid var(--line-soft);border-radius:12px;background:var(--surface);margin-bottom:8px}
+.bp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bunker-cond{margin-top:10px}
+.bunker-box .tank-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.allocation-list{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.route-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.eca-result{display:flex;flex-wrap:wrap;gap:14px;margin-top:9px;padding:8px 10px;border-radius:9px;background:var(--deep);font-size:.76rem;color:var(--muted)}
+.eca-result strong{display:block;color:var(--text);font-variant-numeric:tabular-nums;font-size:.9rem}
+.eca-result span{display:block;margin-bottom:2px}
+.sequence-summary{display:grid;grid-template-columns:1fr;gap:8px}
+.sequence-box{padding:9px;border-radius:10px;background:var(--deep);border:1px solid var(--line-soft)}
+.sequence-item{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--line-soft);font-size:.78rem}
+.sequence-item:last-child{border-bottom:0}
+
+/* add-port button sits inline at the end of the list (not frozen while scrolling) */
+.add-row{display:flex;margin-top:8px;padding:6px;border-radius:14px;background:rgba(18,6,10,.5);border:1px solid var(--line-soft)}
+.add-row button{width:100%}
+
+/* ---------- data tab ---------- */
+.export-grid,.notice-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.export-grid>div,.notice-grid>div{padding:10px;border-radius:11px;background:var(--deep);border:1px solid var(--line-soft)}
+.export-grid p,.notice-grid p{margin:.25rem 0 .6rem;color:var(--muted);font-size:.78rem}
+.notice-grid p{margin-bottom:0}
+.saved-voyage-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.saved-voyage-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:9px;background:var(--surface);border:1px solid var(--line-soft)}
+.sv-info{min-width:0;display:flex;flex-direction:column}
+.sv-info strong{font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sv-info small{color:var(--faint);font-size:.68rem}
+.sv-actions{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+#saveVoyageName{width:100%;margin-bottom:8px}
+/* ---------- guided tour ---------- */
+.tour-overlay{position:fixed;inset:0;z-index:2000;pointer-events:none}
+.tour-hole{position:fixed;border-radius:10px;box-shadow:0 0 0 9999px rgba(6,2,4,.72);pointer-events:none;transition:top .25s ease,left .25s ease,width .25s ease,height .25s ease;border:2px solid var(--gold)}
+.tour-card{position:fixed;width:280px;max-width:calc(100vw - 20px);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 20px 50px rgba(0,0,0,.55);pointer-events:auto;transition:top .25s ease,left .25s ease}
+.tour-step-count{font-size:.64rem;color:var(--faint);font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+.tour-title{margin:0 0 6px;font-size:.94rem;color:var(--text)}
+.tour-text{margin:0 0 10px;font-size:.79rem;color:var(--muted);line-height:1.45}
+.tour-actions{display:flex;align-items:center;gap:6px}
+.tour-target{outline:2px solid var(--gold);outline-offset:3px;border-radius:8px;animation:tourPulse 1.6s ease-in-out infinite}
+@keyframes tourPulse{0%,100%{outline-color:var(--gold)}50%{outline-color:#fff2b0}}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:12px;background:rgba(10,2,5,.82)}
+.modal[hidden]{display:none}
+.modal-card{width:min(860px,100%);max-height:88vh;overflow:auto;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.modal-head h3{margin:0;font-size:1.02rem}
+.help-steps{padding-left:1.25rem}
+.help-steps li{margin:.6rem 0;color:#e5cfd3;font-size:.9rem}
+
+/* ---------- phones: with hints on, give explanations room ---------- */
+@media (max-width:760px){
+  body.hints .tank-fields>.field,body.hints .route-grid>.field,body.hints .form-grid>.field,body.hints .tank-opts>.field{grid-column:1/-1}
+  body.hints .tank-opts,body.hints .rate-card-grid{grid-template-columns:1fr 1fr}
+  body.hints .rate-card-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:359px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .rate-card-grid{grid-template-columns:1fr 1fr}
+}
+
+/* ==========================================================================
+   Tablet / desktop: left sidebar instead of bottom dock
+   ========================================================================== */
+@media (min-width:761px) and (min-height:560px){
+  input,select,textarea{font-size:.9rem;height:36px}
+  textarea{height:auto}
+  .sidebar{left:0;top:0;bottom:0;right:auto;width:236px;height:auto;padding:18px 14px;flex-direction:column;border-top:0;border-right:1px solid var(--line);background:linear-gradient(180deg,#31091a 0,#1a0910 55%,#13070c 100%)}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand-mark{width:42px;height:42px;border-radius:11px;box-shadow:0 0 0 1px rgba(255,194,58,.4),0 6px 18px rgba(0,0,0,.4)}
+  .brand strong{display:block;font-size:1rem}
+  .brand span{display:block;color:var(--muted);font-size:.74rem}
+  .sidebar-plan{display:block;margin:18px 0 12px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.25)}
+  .sidebar-plan span{font-size:.7rem;color:var(--muted);font-weight:700}
+  .sidebar-plan strong{display:block;margin-top:3px}
+  .side-nav{flex:none;flex-direction:column;gap:3px}
+  .nav-link{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:10px 12px;border-radius:10px;font-size:.9rem}
+  .nav-link .ico{width:19px;height:19px}
+  .nav-link::before{top:22%;bottom:22%;left:0;right:auto;width:3px;height:auto;border-radius:0 3px 3px 0;transform:scaleY(.3)}
+  .nav-link.active::before{transform:none}
+  .nav-link:hover{background:rgba(255,255,255,.04)}
+  .nav-link.active{background:rgba(255,194,58,.09)}
+  .nav-home{margin-top:0}
+  .ico-home-wrap{width:auto;height:auto;border-radius:0;background:none;border:0;box-shadow:none;display:contents}
+  .ico-home-wrap .ico{width:22px;height:22px;color:inherit}
+  .nav-home::before{display:block}
+  .nav-home.active .ico-home-wrap{box-shadow:none}
+  .nl-full{display:inline}.nl-short{display:none}
+  .sidebar-actions{display:grid;gap:8px;margin-top:auto}
+  .sidebar-note{display:block;margin-top:12px;color:var(--faint);font-size:.68rem;line-height:1.5}
+
+  .content{margin-left:236px;padding-bottom:0}
+  .topbar{padding:12px 28px;min-height:0}
+  .top-logo{display:none}
+  .top-title h1{font-size:1.35rem}
+  .top-title p{font-size:.8rem}
+  .version-badge{display:inline-block}
+  .section{padding:20px 28px 8px}
+  .section-title{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:12px}
+  .section-title.has-actions>div:first-child{display:block}
+  .panel{padding:15px;border-radius:16px;margin-bottom:12px}
+
+  .hero{padding:20px 22px}
+  .hero-star{width:190px;height:190px;right:-24px;top:-24px}
+  .hero-pos{font-size:2rem}
+  .kpi-grid{gap:10px;margin-bottom:12px}
+  .kpi{padding:12px 14px}
+  .kpi span{font-size:.76rem}
+  .kpi strong{font-size:1.3rem}
+  .metric-grid-inner,.metric-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .metric-card{padding:12px 14px}
+  .metric-value{font-size:1.25rem}
+  .detail-grid{grid-template-columns:repeat(6,1fr)}
+  .detail-kpis{grid-template-columns:repeat(4,1fr)}
+  .consumption-detail{grid-template-columns:repeat(2,1fr)}
+  .rt-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));align-items:start}
+
+  .form-grid{grid-template-columns:repeat(4,1fr);gap:12px}
+  .f-full{grid-column:span 2}
+  .f-full.field-wide{grid-column:1/-1}
+  .rate-card-grid{gap:12px;grid-template-columns:repeat(5,1fr)}
+  .rate-card-grid .field label{font-size:.7rem}
+  .tank-group{display:grid;grid-template-columns:repeat(2,1fr);align-items:start;gap:8px}
+  .tg-head{grid-column:1/-1}
+  .tank-fields{grid-template-columns:repeat(6,1fr)}
+  .tank-fields>.field:nth-child(n){grid-column:auto}
+  .tank-opts{grid-template-columns:1fr 1fr;max-width:640px}
+  .route-grid{grid-template-columns:repeat(12,1fr)}
+  .route-grid .rg-half{grid-column:span 3}
+  .bunker-grid{grid-template-columns:1fr 1fr}
+  .sequence-summary{grid-template-columns:repeat(2,1fr)}
+  .export-grid,.notice-grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .add-row{position:static;justify-content:flex-end;padding:0;background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none;grid-column:1/-1}
+  .add-row button{width:auto;min-width:170px}
+  #tankList .add-row,#routeList .add-row{margin-top:4px}
+  .table-wrap table{font-size:.76rem}
+  .modal{padding:20px}
+  .modal-card{padding:20px}
+}
+@media (min-width:1100px){
+  .tank-group{grid-template-columns:repeat(2,1fr)}
+}
+/* ---------- landscape phones: wide enough for two columns, too short for the desktop sidebar ---------- */
+@media (orientation:landscape) and (max-height:559px){
+  :root{--nav-h:52px;--top-h:46px}
+  .nav-link{font-size:.6rem;padding-top:2px}
+  .nav-link .ico{width:18px;height:18px}
+  .ico-home-wrap{width:42px;height:42px}
+  .ico-home-wrap .ico{width:21px;height:21px}
+  .nav-home{margin-top:-10px}
+  .top-title h1{font-size:.92rem}
+  .top-title p{display:none}
+  .section{padding-bottom:4px}
+  .hero{padding:11px}
+  .rt-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:start}
+  .export-grid,.notice-grid{grid-template-columns:repeat(2,1fr)}
+  .modal-card{max-height:82vh}
+  .tour-card{max-height:70vh;overflow:auto}
+  .calc-keys button{min-height:38px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+
+/* ---------- intro splash ---------- */
+.intro-screen{position:fixed;inset:0;z-index:5000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(circle at 50% 40%,#241019,#0a0308 72%);animation:introFadeOut .6s ease 2.4s forwards}
+.intro-glow{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,198,58,.35),transparent 70%);filter:blur(6px);animation:introPulse 2.2s ease-in-out infinite}
+.intro-icon{position:relative;width:132px;height:132px;border-radius:30px;box-shadow:0 0 40px rgba(255,198,58,.5),0 20px 50px rgba(0,0,0,.5);opacity:0;transform:scale(.6) rotate(-8deg);animation:introIconIn .9s cubic-bezier(.2,.8,.2,1) .15s forwards}
+.intro-name{position:relative;font-weight:900;font-size:1.9rem;letter-spacing:.05em;color:#fff;opacity:0;transform:translateY(14px);animation:introTextIn .7s ease .75s forwards;text-shadow:0 0 20px rgba(255,198,58,.4)}
+.intro-tag{position:relative;font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--intro-gold);opacity:0;animation:introTextIn .7s ease 1s forwards}
+@keyframes introIconIn{to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes introTextIn{to{opacity:1;transform:translateY(0)}}
+@keyframes introPulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.15);opacity:1}}
+@keyframes introFadeOut{to{opacity:0;visibility:hidden;pointer-events:none}}
+@media (prefers-reduced-motion:reduce){
+  .intro-screen{animation:introFadeOut .01s linear 1.3s forwards}
+  .intro-icon,.intro-name,.intro-tag,.intro-glow{animation:none;opacity:1;transform:none}
+}
+/* ---------- help text lingers briefly after a field loses focus ---------- */
+.field.help-visible>.help{display:block}
+.fo-both-label{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin:8px 0 4px}
+.fo-both-label:first-of-type{margin-top:2px}
+
+/* ---------- v1.14: icon labels, calculator, manual fuel pick, proposals, ECA fuel line ---------- */
+.icon-tip{position:fixed;z-index:1100;padding:5px 10px;border-radius:8px;background:var(--gold);color:#2a0a10;font-size:.8rem;font-weight:800;letter-spacing:.01em;pointer-events:none;opacity:0;transform:translateY(-4px);transition:opacity .15s,transform .15s;box-shadow:0 6px 18px rgba(0,0,0,.4);white-space:nowrap}
+.icon-tip.show{opacity:1;transform:none}
+.hints-toggle-row{margin:10px 0 4px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.manual-pick{display:block}
+.manual-pick select{width:100%}
+.manual-pick .manual-name-input{margin-top:6px;width:100%}
+.manual-pick .manual-name-input[hidden]{display:none}
+.inel-note{display:none}
+.tank-ineligible .inel-note{display:inline}
+.pq-list{margin-top:6px;border:1px solid var(--line-soft);border-radius:9px;overflow:hidden}
+.pq-row{display:flex;justify-content:space-between;gap:10px;padding:6px 10px;font-size:.8rem;border-top:1px solid var(--line-soft)}
+.pq-row:first-child{border-top:0}
+.pq-row small{color:var(--gold);font-weight:800;margin-left:4px}
+.pq-row b{font-variant-numeric:tabular-nums}
+.pq-row.pq-no{color:var(--muted);opacity:.75}
+.rt-nm{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.rt-nm>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rt-ft{display:block;color:var(--gold);font-size:.68rem;font-weight:800;letter-spacing:.02em;margin-top:1px}
+.eca-fuelline{margin-top:9px;padding:7px 10px;border-radius:9px;background:rgba(255,194,58,.1);border:1px solid rgba(255,194,58,.35);font-size:.86rem}
+.eca-fuelline strong{color:var(--gold)}
+.calc-card{width:min(360px,100%)}
+.calc-choice-btns{display:grid;gap:10px;margin-top:10px}
+.calc-display{width:100%;margin-top:12px;font-size:1.5rem;text-align:right;font-variant-numeric:tabular-nums;padding:10px 12px}
+.calc-result{min-height:1.6em;margin:4px 2px 8px;text-align:right;color:var(--gold);font-size:1.05rem;font-weight:800;font-variant-numeric:tabular-nums}
+.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.calc-keys button{min-height:48px;font-size:1.15rem;font-weight:700;border-radius:12px;background:var(--surface-2);color:var(--text);border:1px solid var(--line)}
+.calc-keys button.op{background:rgba(255,194,58,.14);color:var(--gold)}
+.calc-keys button.fn{color:var(--muted)}
+.calc-keys button.eq{grid-column:1/-1;background:linear-gradient(135deg,#ffd45e,#ff9f1a);color:#2a0a10;border-color:transparent}
+.calc-foot{display:flex;justify-content:space-between;gap:10px;margin-top:12px}
+
+.maxfill-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;margin-bottom:10px;font-size:.88rem}
+.maxfill-bar strong{color:var(--gold)}
+
+/* ---------- v1.14: whole-block fold, yellow Use-this, tap-to-explain ---------- */
+.rt-whole>summary.rt-title{cursor:pointer;list-style:none;user-select:none;align-items:center}
+.rt-whole>summary.rt-title::-webkit-details-marker{display:none}
+.rt-whole>summary.rt-title>.ico,.rt-whole>summary.rt-title>svg{width:16px;height:16px;flex:none;transition:transform .2s}
+.rt-whole[open]>summary.rt-title>svg{transform:rotate(180deg)}
+.proposed-qty button,button[data-use-proposed]{background:linear-gradient(135deg,#ffd45e,#ff9f1a);color:#2a0a10;border-color:transparent;font-weight:800}
+[data-why]{cursor:pointer}
+[data-why]:hover{background:rgba(255,194,58,.08)}
+[data-why]:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.why-hint{font-size:.78rem;margin:2px 2px 8px}
+.why-card{width:min(460px,100%)}
+.why-value{margin:10px 0 6px;font-size:1.35rem;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+.why-steps{margin:0 0 8px;padding-left:1.2rem;font-size:.9rem;line-height:1.5}
+.why-steps li{margin-bottom:5px}
+.why-foot{font-size:.74rem;margin:6px 0 0}
+
+/* ---------- v1.14: intro background, alert bell, alert toast ---------- */
+.intro-screen{background:#050b26}
+.intro-bg{position:absolute;inset:0;background:linear-gradient(rgba(3,8,30,.2),rgba(3,8,30,.34)),url(./intro-bg.jpg) center/cover no-repeat;transform:scale(1.12);animation:introDrift 3.4s ease-out forwards}
+@keyframes introDrift{to{transform:scale(1)}}
+.intro-glow{opacity:.55}
+@media (prefers-reduced-motion:reduce){.intro-bg{animation:none;transform:none}}
+.icon-btn{position:relative}
+.icon-badge{position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff4d4d;color:#fff;font-size:.68rem;font-weight:900;line-height:17px;text-align:center;box-shadow:0 0 0 2px var(--bg,#1a0a10)}
+.icon-btn.has-alerts{color:#ffb020}
+.icon-btn.has-alerts>svg{animation:bellRing 2.4s ease-in-out infinite;transform-origin:50% 10%}
+@keyframes bellRing{0%,60%,100%{transform:rotate(0)}68%{transform:rotate(14deg)}76%{transform:rotate(-12deg)}84%{transform:rotate(8deg)}92%{transform:rotate(-4deg)}}
+@media (prefers-reduced-motion:reduce){.icon-btn.has-alerts>svg{animation:none}}
+.alert-toast{position:fixed;z-index:1200;top:calc(env(safe-area-inset-top,0px) + 62px);left:50%;transform:translate(-50%,-10px);max-width:min(92vw,420px);padding:10px 14px;border-radius:12px;background:#3a2606;color:#ffd98a;border:1px solid #ffb020;font-size:.86rem;font-weight:700;box-shadow:0 10px 28px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;cursor:pointer}
+.alert-toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+
+/* ---------- v1.14: tank card layout (arrows bottom-right), add-port not sticky ---------- */
+.tank-fields>.field.f-half{grid-column:span 3}
+.tank-fields>.field.f-wide{grid-column:1/-1}
+.tank-fields>.field.f-num{grid-column:span 3}
+.tank-fields>.field.f-num3{grid-column:span 2}
+@media (min-width:761px) and (min-height:560px){.tank-fields>.field.f-wide{grid-column:span 3}.tank-fields>.field.f-num{grid-column:span 2}}
+.tank-foot .foot-move{margin-left:auto;display:flex;gap:8px}
+.tank-foot .foot-move .sequence-actions{flex-direction:row}
+.cap-mt{display:block;margin-top:2px;color:var(--muted);font-size:.72rem}
+.rob-computed{display:flex;flex-direction:column;justify-content:center}
+.rob-computed>span{font-size:.8rem;font-weight:700;color:var(--muted)}
+.rob-computed-val{margin-top:4px;font-size:1.05rem;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.rob-computed-note{display:block;margin-top:2px;color:var(--faint);font-size:.66rem;font-weight:400}
+.cons-override{margin-top:8px;border:1px dashed var(--line);border-radius:10px;padding:6px 10px}
+.cons-override>summary{cursor:pointer;font-size:.82rem;font-weight:700;color:var(--gold);list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cons-override>summary::-webkit-details-marker{display:none}
+.cons-override>summary .fold-chev{width:16px;height:16px;color:var(--gold);opacity:.65}
+.cons-override[open]>summary .fold-chev{opacity:1}
+.cons-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+.cons-row{display:grid;grid-template-columns:minmax(70px,1fr) 1fr 1fr;gap:8px;align-items:end}
+.cons-row.no-anchor{grid-template-columns:minmax(70px,1fr) 1fr}
+.cons-row .cons-name{font-size:.8rem;font-weight:700;padding-bottom:10px}
+.cons-row label{font-size:.72rem;color:var(--muted);display:block}
+.rt-row.rt-bunkered{outline:2px solid var(--gold);outline-offset:-2px;border-radius:9px;background:rgba(255,194,58,.1);box-shadow:0 0 12px rgba(255,194,58,.25)}
+.rt-bk{display:inline-block;margin-top:2px;padding:1px 6px;border-radius:6px;background:var(--gold);color:#2a0a10;font-size:.66rem;font-weight:900}
+.rt-use{display:block;color:#ffb020;font-size:.66rem;font-weight:700;margin-top:1px}
+.detail-kpi.hl,.detail-grid>div.hl{outline:2px solid var(--gold);outline-offset:-2px;background:rgba(255,194,58,.1);border-radius:9px}
+
+/* ---------- ECA/SECA FOBAS-style per-system changeover (imported from pc1) ---------- */
+.eca-sys-input{margin-top:12px;padding:10px;border-radius:10px;background:var(--deep);border:1px solid var(--line-soft)}
+.eca-sys-input .route-grid{margin-top:8px}
+.eca-dot,.eca-sys-head i,.eca-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;flex:none}
+.eca-systems{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.eca-sys{padding:9px 10px;border-radius:10px;background:var(--deep);border:1px solid var(--line-soft);font-size:.76rem;color:var(--muted)}
+.eca-sys.skipped{opacity:.55}
+.eca-sys-head{display:flex;align-items:center;gap:7px;margin-bottom:6px;color:var(--text);font-size:.84rem}
+.eca-sys-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
+.eca-sys-grid span{display:block;font-size:.66rem;margin-bottom:1px}
+.eca-sys-grid strong{display:block;color:var(--text);font-variant-numeric:tabular-nums;font-size:.82rem}
+.eca-sys-grid small{color:var(--faint);font-weight:400}
+.eca-plan{color:var(--gold)!important}
+.eca-warn{display:block;margin-top:6px;color:var(--warn)}
+.eca-result small{display:block;color:var(--faint);margin-top:1px}
+.eca-chart{margin-top:12px;padding:10px 8px 8px;border-radius:12px;background:var(--deep);border:1px solid var(--line-soft)}
+.eca-chart h4{margin:0 4px 6px;font-size:.84rem;color:var(--text)}
+.eca-chart h4 small{color:var(--faint);font-weight:400}
+.eca-chart svg{display:block;width:100%;height:auto;max-width:560px;margin:0 auto}
+.eca-chart svg text{fill:var(--muted);font-size:9px;font-family:inherit}
+.eca-chart svg text.lim{fill:var(--good);font-weight:700}
+.eca-chart svg .grid{stroke:var(--line-soft);stroke-width:1}
+.eca-chart svg .grid.v{stroke-dasharray:2 4}
+.eca-chart svg .axis{stroke:var(--faint);stroke-width:1.2}
+.eca-legend,.eca-key{display:flex;flex-wrap:wrap;gap:4px 14px;margin:6px 6px 0;font-size:.7rem;color:var(--muted)}
+.eca-legend span,.eca-key span{display:inline-flex;align-items:center;gap:6px}
+.eca-legend-item{cursor:pointer;border-radius:6px;padding:2px 6px;margin:-2px -6px;transition:background .15s,opacity .15s}
+.eca-legend-item:hover,.eca-legend-item:focus-visible{background:rgba(255,255,255,.06);color:var(--text)}
+.eca-legend-item:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.eca-legend-item.eca-dim{opacity:.35}
+.eca-series{transition:opacity .15s}
+.eca-series.eca-dim{opacity:.12}
+.eca-key{color:var(--faint);font-size:.66rem}
+.eca-key b{display:inline-block;width:20px;height:0;border-top:2px solid var(--muted)}
+.eca-key b.dash{border-top-style:dashed}
+.eca-key b.dot{width:8px;height:8px;border:2px solid var(--muted);border-radius:50%}
+@media(min-width:761px) and (min-height:560px){.eca-systems{grid-template-columns:repeat(3,1fr)}}
+
+/* ---- v1.16: tap an alert → jump to its source, with a correction guide ---- */
+.alert li[data-alert]{cursor:pointer;padding:6px 0;border-bottom:1px solid rgba(255,154,60,.18)}
+.alert li[data-alert]:last-child{border-bottom:0}
+.alert li[data-alert]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+.alert-go{display:inline-block;margin-left:4px;padding:1px 8px;border-radius:999px;background:rgba(255,194,58,.16);border:1px solid rgba(255,194,58,.5);color:var(--gold);font-size:.74rem;font-weight:800;white-space:nowrap}
+.alert-target{outline:3px solid var(--gold);outline-offset:3px;border-radius:12px;background:rgba(255,194,58,.10);animation:alertPulse 1.4s ease-in-out 4}
+@keyframes alertPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,194,58,.55)}50%{box-shadow:0 0 0 9px rgba(255,194,58,0)}}
+.alert-guide{position:fixed;z-index:900;left:8px;right:8px;bottom:calc(var(--nav-h) + var(--sab) + 8px);max-height:46vh;overflow:auto;padding:12px 14px;border-radius:14px;background:var(--surface-2);border:1px solid var(--gold);color:var(--text);box-shadow:0 12px 34px rgba(0,0,0,.6);font-size:.86rem}
+.alert-guide[hidden]{display:none}
+.alert-guide.resolved{border-color:var(--good)}
+.alert-guide.resolved .ag-head strong{color:var(--good)}
+.ag-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ag-head strong{font-size:.95rem;color:var(--gold)}
+.ag-where{margin:6px 0 4px;color:var(--muted);font-size:.8rem;font-weight:700}
+.ag-steps{margin:6px 0 8px;padding-left:1.2rem;line-height:1.45}
+.ag-steps li{margin-bottom:4px}
+.ag-actions{display:flex;flex-wrap:wrap;gap:6px}
+@media (min-width:761px) and (min-height:560px){.alert-guide{left:256px;right:auto;bottom:16px;width:min(440px,calc(100vw - 280px))}}
+@media (prefers-reduced-motion:reduce){.alert-target{animation:none}}
+
+/* ---- v1.17: yellow Load demo, Clear all, minimizable Guide me ---- */
+.btn-pair{display:flex;gap:8px}
+.btn-pair>button{flex:1 1 0;min-width:0;padding-left:8px;padding-right:8px;white-space:nowrap}
+button.primary{color:#2a1500;font-weight:800}
+button.ghost.danger{background:transparent}
+.tour-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tour-min{min-width:34px;padding:2px 10px;line-height:1.2;font-weight:800}
+.tour-overlay.min .tour-hole{box-shadow:none;border-color:transparent}
+.tour-overlay.min .tour-card{top:auto!important;left:auto!important;right:10px;bottom:calc(var(--nav-h) + var(--sab) + 10px);width:auto;padding:6px 8px 6px 12px;border-radius:999px;border-color:var(--gold);cursor:pointer}
+.tour-overlay.min .tour-title,.tour-overlay.min .tour-text,.tour-overlay.min .tour-actions{display:none}
+.tour-overlay.min .tour-step-count{margin:0;font-weight:800;color:var(--gold)}
+.tour-overlay.min .tour-step-count::before{content:"Guide · "}
+@media (min-width:761px) and (min-height:560px){.tour-overlay.min .tour-card{bottom:16px}}
+
+/* ---------- v1.19: Dashboard — Noon report vs actual ROB, bunkering required, ECA ahead ---------- */
+.rob-compare-card{cursor:pointer}
+.rob-compare-rows{display:grid;grid-template-columns:1fr auto;gap:2px 8px;margin-top:4px;font-size:.72rem;color:var(--muted)}
+.rob-compare-rows strong{color:var(--text);font-variant-numeric:tabular-nums;font-size:.82rem;text-align:right}
+.rob-compare-delta{margin-top:5px;font-size:.72rem;font-weight:700}
+.rob-compare-delta.ok{color:var(--good)}
+.rob-compare-delta.warn{color:var(--warn)}
+.rob-compare-card.warn{outline:1px solid rgba(255,159,26,.5)}
+.bunker-needed-rows{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px}
+.bunker-needed-rows span{font-size:.78rem;color:var(--muted);cursor:pointer}
+.bunker-needed-rows b{color:var(--gold);font-weight:800}
+.eca-ahead-panel{margin-top:10px;border:1px solid rgba(255,194,58,.35);background:rgba(255,194,58,.06)}
+.eca-ahead-panel .next-port{grid-template-columns:1fr}
+.eca-ahead-panel .next-port strong{font-size:.95rem}
+.eca-ahead-panel .next-port small{color:var(--muted);font-size:.72rem}
+.eca-ahead-panel .next-port span{font-size:.8rem;color:var(--text)}
+.eca-ahead-panel .next-port .tag{margin-top:4px;color:var(--gold);cursor:pointer;font-size:.72rem;font-weight:700}
+
+/* Ignore / restore alerts */
+#alerts li{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+#alerts li .alert-ignore{margin-left:auto;font-size:.74rem;padding:2px 10px}
+.ignored-alerts{margin-top:10px;font-size:.85rem}
+.ignored-alerts summary{cursor:pointer;color:var(--muted,#9aa)}
+.ignored-alerts ul{list-style:none;margin:8px 0;padding:0}
+.ignored-alerts li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0;opacity:.85}
+
+/* ==========================================================================
+   v1.25 · Chunk 2A — Header: glass top bar + metallic icon buttons
+   (appended last so it wins over the earlier .icon-btn / .icon-badge rules)
+   ========================================================================== */
+.topbar{
+  background:linear-gradient(180deg,rgba(96,12,32,.9),rgba(32,9,19,.8));
+  -webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);
+  border-bottom:1px solid var(--line-gold);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 8px 22px rgba(0,0,0,.35)}
+.top-logo{box-shadow:0 0 0 1px rgba(255,194,58,.55),0 0 12px rgba(255,194,58,.28)}
+.topbar-actions{gap:8px}
+
+.icon-btn{
+  position:relative;width:36px;height:36px;border-radius:12px;
+  color:var(--gold-2);
+  background:
+    linear-gradient(160deg,rgba(255,224,138,.20) 0%,rgba(255,194,58,.05) 42%,rgba(0,0,0,.30) 100%),
+    var(--glass-strong);
+  border:1px solid rgba(255,194,58,.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 4px rgba(0,0,0,.4),0 3px 8px rgba(0,0,0,.38);
+  transition:box-shadow .15s,border-color .15s,color .15s,transform .12s,background .15s}
+.icon-btn .ico{filter:drop-shadow(0 1px 1px rgba(0,0,0,.45))}
+.icon-btn:hover{
+  color:#fff1c2;border-color:var(--gold);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -2px 4px rgba(0,0,0,.4),0 0 14px rgba(255,194,58,.4),0 3px 8px rgba(0,0,0,.38)}
+.icon-btn:active{
+  transform:translateY(1px) scale(.96);
+  box-shadow:inset 0 3px 6px rgba(0,0,0,.55),0 0 0 rgba(0,0,0,0)}
+.icon-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+/* toggled on (Hints) — lit gold plate */
+.icon-btn[aria-pressed="true"]{
+  color:#2a0a10;border-color:#ffe08a;
+  background:linear-gradient(145deg,#ffe08a 0%,#ffc23a 50%,#e8860a 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 4px rgba(120,60,0,.4),0 0 16px rgba(255,194,58,.5)}
+.icon-btn[aria-pressed="true"] .ico{filter:none}
+/* bell with active alerts — amber heat, ringing icon (animation kept from earlier rule) */
+.icon-btn.has-alerts{
+  color:#ffb020;border-color:rgba(255,159,26,.85);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 -2px 4px rgba(0,0,0,.4),0 0 14px rgba(255,159,26,.42),0 3px 8px rgba(0,0,0,.38)}
+
+.icon-badge{
+  top:-5px;right:-5px;
+  background:linear-gradient(145deg,#ff5a70 0%,#c4122c 100%);color:#fff;
+  box-shadow:0 0 0 2px #2a0b14,0 0 0 3px rgba(255,194,58,.65),0 2px 6px rgba(0,0,0,.5)}
+
+.version-badge{
+  border-color:var(--line-gold);color:var(--gold-2);
+  background:linear-gradient(160deg,rgba(255,224,138,.12),rgba(0,0,0,.25));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 3px rgba(0,0,0,.35)}
+
+/* tap-label tooltip: brushed-gold plate to match the buttons */
+.icon-tip{
+  background:linear-gradient(145deg,#ffe08a,#ffc23a 55%,#e8860a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 18px rgba(0,0,0,.45)}
+
+@media (min-width:761px) and (min-height:560px){
+  .icon-btn{width:40px;height:40px}
+  .icon-btn .ico{width:19px;height:19px}
+  .topbar-actions{gap:10px}
+}
+
+/* ==========================================================================
+   v1.25 · Chunk 2B — numbered accordion indicators, chevrons, progress bars
+   ========================================================================== */
+
+/* ---- numbered medallions (route step + tank sequence) ---- */
+.step,.seq-chip{
+  width:26px;height:26px;flex:none;
+  background:radial-gradient(circle at 32% 26%,#fff0bd 0%,#ffc23a 46%,#c9780a 100%);
+  color:#2a0a10;font-weight:900;font-variant-numeric:tabular-nums;
+  border:1px solid rgba(255,236,170,.75);
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.55),inset 0 -2px 3px rgba(120,60,0,.45),0 2px 6px rgba(0,0,0,.45);
+  transition:box-shadow .2s}
+/* fixed-ROB tank ("F"): dark glass medallion with a dim gold rim */
+.seq-chip.fixed{
+  background:linear-gradient(160deg,rgba(255,224,138,.10),rgba(0,0,0,.35));
+  color:var(--muted);border:1px solid rgba(255,194,58,.3);text-shadow:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -2px 3px rgba(0,0,0,.4)}
+/* open accordion → the medallion glows */
+details[open]>summary .step,details[open]>summary .seq-chip:not(.fixed){
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.6),inset 0 -2px 3px rgba(120,60,0,.45),0 0 0 3px rgba(255,194,58,.22),0 0 14px rgba(255,194,58,.55)}
+
+/* ---- chevron: round glass chip on card summaries ---- */
+.tank-sum .fold-chev,.route-sum .fold-chev{
+  box-sizing:border-box;width:26px;height:26px;padding:5px;border-radius:50%;
+  background:rgba(0,0,0,.3);border:1px solid rgba(255,194,58,.28);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.5);
+  transition:transform .2s ease,color .2s,border-color .2s,background .2s}
+details[open]>.tank-sum .fold-chev,details[open]>.route-sum .fold-chev{
+  background:rgba(255,194,58,.12);border-color:rgba(255,194,58,.65)}
+.tk-side .tk-pct{font-weight:800;color:var(--gold-2)}
+
+/* ---- accordion cards: tactile summary + lit state when open ---- */
+.tank-sum,.route-sum{transition:background .2s}
+.tank-sum:hover,.route-sum:hover{background:rgba(255,194,58,.05)}
+details.item-card[open]>.tank-sum,details.item-card[open]>.route-sum{
+  background:linear-gradient(180deg,rgba(255,194,58,.10),rgba(255,194,58,0))}
+details.item-card{transition:border-color .2s,box-shadow .2s}
+details.item-card[open]{
+  border-color:rgba(255,194,58,.55);
+  box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 8px 20px rgba(0,0,0,.3),0 0 18px rgba(255,194,58,.10)}
+/* route/port cards: gold accent edge like the tank cards (crimson vanished on the red glass) */
+.route-card{border-left-color:var(--gold)}
+
+/* ---- progress bars: one metallic amber → gold fill everywhere ----
+   Per-fuel red / pink / yellow colour-coding is retired; the tank name and its
+   fuel-type label already say which product a bar belongs to. To bring the old
+   colours back, set --bar-fo / --bar-do / --bar-lo below to their previous gradients. */
+:root{
+  --bar-fill:linear-gradient(90deg,#c9780a 0%,var(--amber) 30%,var(--gold) 72%,var(--gold-2) 100%);
+  --bar-glow:0 0 10px rgba(255,194,58,.5);
+  --bar-fo:var(--bar-fill);--bar-do:var(--bar-fill);--bar-lo:var(--bar-fill);
+  --bar-track:rgba(8,2,5,.66);
+}
+/* recessed track */
+.progress,.metric-card .progress,.tank-bar,.hbar{
+  background:var(--bar-track);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.75),0 1px 0 rgba(255,194,58,.08)}
+.tank-bar,.hbar{height:6px;border-radius:6px}
+/* fill */
+.progress span,.tank-bar span,.hbar span{
+  position:relative;background:var(--bar-fill);box-shadow:var(--bar-glow);
+  transition:width .35s ease}
+.tank-bar.bar-fo span,.progress.bar-fo span,.hbar.bar-fo span{background:var(--bar-fo);box-shadow:var(--bar-glow)}
+.tank-bar.bar-do span,.progress.bar-do span,.hbar.bar-do span{background:var(--bar-do);box-shadow:var(--bar-glow)}
+.tank-bar.bar-lo span,.progress.bar-lo span,.hbar.bar-lo span{background:var(--bar-lo);box-shadow:var(--bar-glow)}
+/* glossy highlight on the upper half of the fill */
+.progress span::after,.tank-bar span::after,.hbar span::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:50%;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0));pointer-events:none}
+/* semantic states stay distinct from the amber→gold default (re-declared after the
+   fuel-type rules above because they share specificity) */
+.tank-bar.warn span{background:linear-gradient(90deg,#ff7a2f,#ff4a2a);box-shadow:0 0 10px rgba(255,90,40,.5)}
+.tank-bar.danger span,.hbar.over span{background:linear-gradient(90deg,#ff6b7d,#d8132f)!important;box-shadow:0 0 10px rgba(216,19,47,.55)}
+
+/* ==========================================================================
+   v1.26 · Chunk 3A — form grids: clean two-up pairs, aligned inputs, polished fields
+   ========================================================================== */
+/* Same gutter everywhere, and inputs share a baseline even when one label wraps to two lines
+   (e.g. "Distance from previous (NM)" next to "Speed (kn)"). */
+.form-grid,.tank-fields,.route-grid,.rate-card-grid,.tank-opts,.cons-row{gap:10px;align-items:end}
+.form-grid{row-gap:11px}
+.tank-fields,.route-grid{row-gap:11px}
+
+/* Labels: slightly tighter and brighter, and they light up while their field is being edited */
+.field label{gap:4px;letter-spacing:.01em;transition:color .15s}
+.field label:focus-within{color:var(--gold-2)}
+
+/* Selects: gold chevron instead of the native white arrow, so they match the recessed inputs */
+select{
+  -webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffc23a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right .5rem center;background-size:15px 15px;
+  padding-right:1.9rem}
+select:focus{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffe08a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+input[type=datetime-local]{color-scheme:dark;display:block;min-width:0;max-width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none;text-align:left}
+input[type=datetime-local]::-webkit-date-and-time-value{text-align:left;min-width:0;margin:0}
+input[type=datetime-local]::-webkit-datetime-edit{padding:0;overflow:hidden}
+.field,.field>label{min-width:0}
+input:disabled,select:disabled{opacity:.5}
+
+/* Computed (read-only) values — e.g. "Present ROB (computed)" — sit in a dashed readout plate
+   so they read as a result, not something to type into. */
+.rob-computed-val{
+  display:flex;align-items:center;min-height:38px;margin-top:4px;padding:0 .6rem;border-radius:9px;
+  background:rgba(0,0,0,.3);border:1px dashed rgba(255,194,58,.4);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.4);color:var(--gold-2)}
+.rob-computed-note{margin-top:3px}
+.cap-mt{color:var(--gold-2);opacity:.85}
+
+/* Panels that hold a form get a hairline divider before the next block (e.g. Noon report ROB) */
+.field.field-wide{padding-bottom:6px;border-bottom:1px solid var(--line-soft)}
+.field.field-wide strong{color:var(--gold-2)}
+
+/* Phones: guarantee tidy 2×2 blocks — a lone half-width field (odd one out) spans the full row
+   instead of leaving a hole beside it. */
+@media (max-width:760px){
+  .form-grid>.f-half:last-child,
+  .form-grid>.f-half:has(+ .f-full){grid-column:1/-1}
+  .route-grid>.rg-half:last-child{grid-column:1/-1}
+  .rate-card-grid>.field:last-child:nth-child(odd){grid-column:1/-1}
+}
+/* Desktop: the same gutter and a roomier row gap */
+@media (min-width:761px) and (min-height:560px){
+  .form-grid,.tank-fields,.route-grid{gap:12px}
+  .form-grid,.tank-fields,.route-grid{row-gap:14px}
+}
+
+/* ==========================================================================
+   v1.26 · Chunk 3B — CTA buttons: one metallic-gold primary, glass secondaries
+   ========================================================================== */
+:root{
+  --btn-gold:linear-gradient(180deg,#ffe58f 0%,#ffc23a 46%,#ee8a0c 100%);
+  --btn-gold-hover:linear-gradient(180deg,#fff0b0 0%,#ffd04f 46%,#f89a18 100%);
+  --btn-bevel:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 3px rgba(130,60,0,.45),0 3px 8px rgba(0,0,0,.4);
+}
+button{transition:filter .15s,transform .12s,box-shadow .15s,background .15s,border-color .15s,color .15s;letter-spacing:.005em}
+
+/* ---- primary / "go" actions: every yellow button shares the same brushed-gold plate ---- */
+button.primary,
+.icon-btn.accent,
+.tg-head [data-add-tank],
+.sequence-actions [data-move-order],
+.sequence-actions [data-move-route],
+.proposed-qty button,button[data-use-proposed],
+.calc-keys button.eq{
+  background:var(--btn-gold);color:#2a1100;border:1px solid rgba(255,236,170,.7);
+  text-shadow:0 1px 0 rgba(255,255,255,.38);box-shadow:var(--btn-bevel)}
+button.primary:hover,
+.icon-btn.accent:hover,
+.tg-head [data-add-tank]:hover,
+.sequence-actions [data-move-order]:hover,
+.sequence-actions [data-move-route]:hover,
+.proposed-qty button:hover,button[data-use-proposed]:hover,
+.calc-keys button.eq:hover{
+  background:var(--btn-gold-hover);border-color:#fff0b0;
+  box-shadow:var(--btn-bevel),0 0 16px rgba(255,194,58,.45)}
+button.primary:active,
+.tg-head [data-add-tank]:active,
+.sequence-actions [data-move-order]:active,
+.sequence-actions [data-move-route]:active,
+.proposed-qty button:active,button[data-use-proposed]:active,
+.calc-keys button.eq:active{
+  transform:translateY(1px) scale(.98);
+  box-shadow:inset 0 3px 6px rgba(120,60,0,.55),0 1px 2px rgba(0,0,0,.4)}
+button.primary:focus-visible,.tg-head [data-add-tank]:focus-visible{outline:2px solid #fff0b0;outline-offset:2px}
+/* disabled move-arrow stays a dim glass plate, as before */
+.sequence-actions [data-move-route][disabled],.sequence-actions [data-move-order][disabled]{
+  background:rgba(0,0,0,.25);border:1px solid var(--line);color:var(--faint);text-shadow:none;box-shadow:none;opacity:.5}
+button:disabled{box-shadow:none}
+
+/* ---- secondary / ghost: frosted glass with a gold hairline ---- */
+button.secondary,button.ghost{
+  background:linear-gradient(180deg,rgba(255,224,138,.08),rgba(0,0,0,.18)),var(--glass);
+  color:var(--text);border:1px solid rgba(255,194,58,.32);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 6px rgba(0,0,0,.28)}
+button.secondary:hover,button.ghost:hover{
+  border-color:var(--gold);color:#fff;background:linear-gradient(180deg,rgba(255,224,138,.16),rgba(0,0,0,.14)),var(--glass);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 12px rgba(255,194,58,.28)}
+button.secondary:active,button.ghost:active{box-shadow:inset 0 2px 5px rgba(0,0,0,.5)}
+
+/* ---- destructive: crimson glass, fills on hover ---- */
+button.danger,button.ghost.danger{
+  background:linear-gradient(180deg,rgba(255,107,125,.10),rgba(120,10,30,.22));
+  color:#ffb3bd;border:1px solid rgba(255,107,125,.5)}
+button.danger:hover,button.ghost.danger:hover{
+  background:linear-gradient(180deg,rgba(255,107,125,.28),rgba(160,14,38,.4));
+  border-color:#ff6b7d;color:#fff;box-shadow:0 0 12px rgba(255,107,125,.35)}
+
+/* ---- "Add port": the main CTA at the end of the route list ---- */
+.add-row{background:rgba(0,0,0,.22);border:1px dashed rgba(255,194,58,.4);border-radius:14px}
+.add-row button{min-height:44px;font-size:.95rem}
+.add-row button .ico{width:18px;height:18px}
+
+/* ---- calculator keypad: glass keys with a bevel; operators tinted gold ---- */
+.calc-keys button{
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.22)),var(--glass-strong);
+  border:1px solid rgba(255,194,58,.2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 2px 5px rgba(0,0,0,.35)}
+.calc-keys button:active{box-shadow:inset 0 2px 5px rgba(0,0,0,.55)}
+.calc-keys button.op{background:linear-gradient(180deg,rgba(255,224,138,.22),rgba(255,160,26,.08)),var(--glass-strong);border-color:rgba(255,194,58,.5);color:var(--gold-2)}
+.calc-keys button.eq{border-color:rgba(255,236,170,.7)}
+
+/* ---- sidebar actions: stack so "Clear all entry" no longer spills out of the 236px sidebar ---- */
+.sidebar-actions{grid-template-columns:minmax(0,1fr)}
+.sidebar-actions .btn-pair{flex-direction:column}
+.sidebar-actions .btn-pair>button{width:100%}
+
+/* ---- modals: same glass-and-gold treatment as the panels (they were still flat maroon) ---- */
+.modal-card{
+  background:linear-gradient(165deg,rgba(66,22,40,.97),rgba(33,11,22,.97));
+  border:1px solid var(--line-gold);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 24px 80px rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.4)}
+.modal-head{padding-bottom:8px;margin-bottom:6px;border-bottom:1px solid var(--line-soft)}
+.modal-head>button.ghost{width:34px;height:34px;min-height:0;padding:0;border-radius:10px}
+
+/* ==========================================================================
+   v1.27 · Chunk 4A — bottom dock (phones / landscape phones) and its nav items
+   Scoped to the "dock" layout so the desktop sidebar is untouched here.
+   ========================================================================== */
+@media not all and (min-width:761px) and (min-height:560px){
+  .sidebar{
+    background:linear-gradient(180deg,rgba(58,11,28,.97) 0%,rgba(22,6,13,.99) 100%);
+    -webkit-backdrop-filter:blur(24px) saturate(1.35);backdrop-filter:blur(24px) saturate(1.35);
+    border-top:1px solid rgba(255,194,58,.45);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 -10px 28px rgba(0,0,0,.5)}
+  /* hairline of light across the top edge, fading out to the sides */
+  .sidebar::before{
+    content:"";position:absolute;left:0;right:0;top:-1px;height:1px;pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,224,138,.85) 50%,transparent)}
+
+  .nav-link{
+    color:var(--faint);font-weight:700;letter-spacing:.01em;
+    transition:color .18s,background .18s}
+  .nav-link .ico{transition:transform .18s,filter .18s}
+  .nav-link:active .ico{transform:scale(.88)}
+  .nav-link:not(.nav-home).active{
+    color:var(--gold-2);
+    background:radial-gradient(70% 90% at 50% 0%,rgba(255,194,58,.20),rgba(255,194,58,0) 72%)}
+  .nav-link:not(.nav-home).active .ico{filter:drop-shadow(0 0 6px rgba(255,194,58,.75))}
+  /* active tab marker: thicker, brighter metallic bar */
+  .nav-link::before{
+    height:3px;left:26%;right:26%;
+    background:linear-gradient(90deg,#c9780a,#ffe08a 50%,#c9780a);
+    box-shadow:0 0 12px 1px rgba(255,194,58,.75)}
+
+  /* Alerts dot on the Results tab: gold ring so it reads on the glass */
+  .nav-dot{background:linear-gradient(145deg,#ff5a70,#c4122c);border:2px solid #2a0b14;box-shadow:0 0 0 1px rgba(255,194,58,.7)}
+}
+
+/* ==========================================================================
+   v1.27 · Chunk 4B — Home FAB (dock) + desktop sidebar
+   ========================================================================== */
+@media not all and (min-width:761px) and (min-height:560px){
+  /* The FAB: a gold medallion wrapped in a thin metallic conic ring, with a dock-coloured gap
+     between ring and face so it looks cut into the bar. */
+  .ico-home-wrap{
+    position:relative;
+    background:
+      radial-gradient(circle at 34% 24%,rgba(255,255,255,.62) 0%,rgba(255,255,255,0) 46%),
+      linear-gradient(155deg,#ffe08a 0%,#ffb92e 55%,#e8790a 100%);
+    border:3px solid #240a14;
+    box-shadow:inset 0 -3px 5px rgba(120,60,0,.35),0 8px 18px rgba(0,0,0,.55),0 0 18px rgba(255,194,58,.28);
+    transition:transform .15s,box-shadow .2s}
+  .ico-home-wrap::before{
+    content:"";position:absolute;inset:-6px;border-radius:50%;z-index:-1;
+    background:conic-gradient(from 200deg,#7a4806,#ffe08a,#b8700a,#fff1b8,#8a5208,#ffe08a,#7a4806);
+    box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+  .ico-home-wrap .ico{color:#2a0a10;filter:drop-shadow(0 1px 0 rgba(255,255,255,.4))}
+  .nav-home:active .ico-home-wrap{transform:scale(.93)}
+  /* current tab = Home: pulsing halo */
+  .nav-home.active .ico-home-wrap{
+    box-shadow:inset 0 -3px 5px rgba(120,60,0,.35),0 8px 18px rgba(0,0,0,.55),0 0 0 4px rgba(255,194,58,.22),0 0 26px rgba(255,194,58,.6);
+    animation:fabHalo 2.6s ease-in-out infinite}
+  .nav-home .nl{color:var(--faint);letter-spacing:.02em}
+  .nav-home.active .nl{color:var(--gold-2)}
+}
+@keyframes fabHalo{
+  0%,100%{box-shadow:inset 0 -3px 5px rgba(120,60,0,.35),0 8px 18px rgba(0,0,0,.55),0 0 0 4px rgba(255,194,58,.22),0 0 22px rgba(255,194,58,.5)}
+  50%{box-shadow:inset 0 -3px 5px rgba(120,60,0,.35),0 8px 18px rgba(0,0,0,.55),0 0 0 6px rgba(255,194,58,.12),0 0 34px rgba(255,194,58,.75)}
+}
+
+/* ---- Desktop / tablet sidebar: same glass-and-gold language ---- */
+@media (min-width:761px) and (min-height:560px){
+  .sidebar{
+    background:linear-gradient(180deg,rgba(66,10,30,.9) 0%,rgba(28,8,17,.94) 55%,rgba(18,6,11,.97) 100%);
+    -webkit-backdrop-filter:blur(20px) saturate(1.3);backdrop-filter:blur(20px) saturate(1.3);
+    border-right:1px solid rgba(255,194,58,.4);
+    box-shadow:inset -1px 0 0 rgba(255,255,255,.04),10px 0 30px rgba(0,0,0,.35)}
+  .ico-home-wrap::before{display:none}
+  .brand-mark{box-shadow:0 0 0 1px rgba(255,194,58,.6),0 0 14px rgba(255,194,58,.3),0 6px 18px rgba(0,0,0,.4)}
+  .sidebar-plan{
+    background:linear-gradient(160deg,rgba(255,224,138,.08),rgba(0,0,0,.28));
+    border:1px solid var(--line-gold);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -2px 6px rgba(0,0,0,.3)}
+  .sidebar-plan span{color:var(--gold-2);letter-spacing:.04em;text-transform:uppercase;font-size:.64rem}
+  .nav-link{transition:background .18s,color .18s,box-shadow .18s}
+  .nav-link:hover{background:rgba(255,194,58,.07);color:var(--text)}
+  .nav-link.active{
+    color:var(--gold-2);
+    background:linear-gradient(90deg,rgba(255,194,58,.20),rgba(255,194,58,.03) 85%);
+    box-shadow:inset 0 0 0 1px rgba(255,194,58,.22),0 0 16px rgba(255,194,58,.08)}
+  .nav-link.active .ico{filter:drop-shadow(0 0 6px rgba(255,194,58,.7))}
+  .nav-link::before{background:linear-gradient(180deg,#ffe08a,#c9780a)}
+  .sidebar-note{border-top:1px solid var(--line-soft);padding-top:10px}
+}
+
+/* ==========================================================================
+   v1.28 · Chunk 5A — Tank field alignment (Unpumpable quirk from chunk 3)
+   Bottom-aligning a row made the input beside a field with a trailing note
+   ("≈ MT", "ASTM 54B/56…") sink to the bottom. Rows now align on the INPUT line:
+   fields start at the top and every numeric label reserves two lines.
+   ========================================================================== */
+.tank-fields{align-items:start}
+.tank-fields>.field.f-num>label{
+  display:grid;grid-template-rows:3em auto;gap:4px;align-content:start}
+.tank-fields>.field.f-num>label{align-items:end}
+.tank-fields>.field.rob-computed{display:grid;grid-template-rows:3em auto auto;row-gap:4px;font-size:.8rem}
+.tank-fields>.field.rob-computed>span{align-self:end}
+.tank-fields>.field.rob-computed>.rob-computed-val{margin-top:0}
+.cap-mt,.rob-computed-note{display:block;min-height:2.2em}
+/* Desktop: the name field takes its own row so no row mixes a plain field with numeric
+   fields whose labels reserve two lines (keeps every input on one line per row). */
+@media (min-width:761px) and (min-height:560px){
+  .tank-fields>.field.f-wide:has([data-field="namePreset"]),
+  .tank-fields>.field.f-wide:has([data-field="name"]){grid-column:1/-1}
+}
+
+/* ==========================================================================
+   v1.28 · Chunk 5B — consistency pass: no flat maroon panels, no off-palette colours
+   Top-level cards get the frosted glass; cards nested inside a glass panel use a
+   translucent "tile" (no second blur layer — keeps scrolling smooth on phones);
+   recessed wells stay dark with an inset shadow.
+   ========================================================================== */
+:root{
+  --tile:linear-gradient(160deg,rgba(255,194,58,.075),rgba(255,194,58,0) 46%),rgba(46,16,28,.5);
+  --tile-line:rgba(255,194,58,.2);
+  --well:rgba(12,3,7,.42);
+  --tile-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 3px 10px rgba(0,0,0,.2);
+}
+/* top-level cards sitting straight on the page background */
+.metric-card,.bunker-product{
+  background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
+  border-color:var(--line-gold);box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 6px 16px rgba(0,0,0,.24)}
+.metric-card{border-left:3px solid var(--gold)}
+/* tiles nested inside panels */
+.route-node,.detail-grid>div,.notice-grid>div,.export-grid>div,.save-voyage-block,.hints-toggle-row,.rt-group{
+  background:var(--tile);border:1px solid var(--tile-line);box-shadow:var(--tile-shadow)}
+.route-node.selected{background:linear-gradient(160deg,rgba(150,24,52,.9),rgba(52,20,34,.9));border-color:var(--gold)}
+.route-node.current{border-color:rgba(69,214,155,.7)}
+.route-node.next{border-color:rgba(255,160,176,.55)}
+.route-point-details{background:linear-gradient(180deg,rgba(255,194,58,.05),rgba(0,0,0,0) 120px),rgba(22,6,13,.48);
+  border:1px solid var(--line-gold);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+/* group strips inside the route detail */
+.rt-group-total,.rt-group-bunker{background:rgba(255,194,58,.07);border-top:1px solid var(--tile-line)}
+.rt-group-bunker{border-top:0}
+/* recessed wells */
+.fixed-rob-note,.bunker-box,.sequence-box{
+  background:var(--well);border:1px solid var(--line-soft);box-shadow:inset 0 2px 6px rgba(0,0,0,.4)}
+.fixed-rob-note{border-style:dashed;border-color:var(--tile-line)}
+/* sticky table header must stay opaque enough to cover rows scrolling beneath it */
+.table-wrap th{background:linear-gradient(180deg,#4a1a2e,#341324);color:var(--gold-2);
+  border-bottom:1px solid var(--line-gold);text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.table-wrap tbody tr:nth-child(even) td{background:rgba(255,194,58,.035)}
+/* off-palette leftovers */
+.intro-screen{background:#14060b}
+.intro-bg{background:linear-gradient(rgba(30,6,14,.28),rgba(20,4,10,.45)),url(./intro-bg.jpg) center/cover no-repeat}
+.icon-badge{background:linear-gradient(145deg,#ff5a70,#c4122c);color:#fff;
+  box-shadow:0 0 0 1px rgba(255,194,58,.75),0 0 0 3px #2a0b14}
+/* Route tank rows: fixed ETA/ETD column widths, in rem so the header (smaller font) and the rows
+   share identical columns and values like "0.00/410.00" and "250.00/410.00" line up row to row;
+   the tank name takes whatever is left. */
+.rt-head,.rt-row{grid-template-columns:minmax(0,1fr) 6.4rem 6.4rem;gap:8px}
+
+/* ==========================================================================
+   v1.29 · Tab slide transition — the two screens involved slide sideways over 500 ms
+   (see showTab / startTabSlide in app.js). overflow-x:clip (not hidden) keeps the incoming
+   screen from creating a horizontal scrollbar and cannot be scrolled programmatically.
+   ========================================================================== */
+.content.tab-sliding{overflow-x:clip}
+
+/* ==========================================================================
+   v1.30 · Noon report date on the Noon report ROB cards + "Today · 12:00 UTC" shortcut
+   ========================================================================== */
+.noon-head,.metric-heading-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 10px}
+.noon-date-chip{display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;border:1px solid var(--line-gold);
+  background:rgba(255,194,58,.08);color:var(--gold-2);font-size:.72rem;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.noon-date-chip:empty{display:none}
+.noon-date-actions{margin-top:6px}
+/* Present position + its UTC offset on one line */
+.pos-row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.pos-row>label{margin:0;min-width:0}
+.pos-row .pos-name{flex:1 1 11rem}
+.pos-row .pos-offset{flex:0 1 8.5rem}
+.form-grid>.f-row{grid-column:1/-1}
+.pos-row input,.pos-row select{width:100%}
+
+/* ==========================================================================
+   v1.33 · Floating pill navigation bar (phones / landscape phones)
+   The dock no longer spans edge to edge: it floats above the bottom edge with fully
+   rounded ends. --sab now includes the float gap, so everything that sits above the
+   dock (page padding, alert guide, tour chip, scroll padding) clears it automatically.
+   ========================================================================== */
+@media not all and (min-width:761px) and (min-height:560px){
+  :root{--sab:calc(env(safe-area-inset-bottom,0px) + 14px)}
+  .sidebar{
+    left:12px;right:12px;bottom:calc(var(--sab) - 4px);
+    height:var(--nav-h);padding:0 10px;
+    border-radius:999px;
+    border:1px solid rgba(255,194,58,.55);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 10px 26px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.35)}
+  .sidebar::before{left:18%;right:18%;top:-1px}
+  .side-nav{align-items:stretch}
+  /* the active tab is a pill-shaped highlight inside the pill bar */
+  .nav-link:not(.nav-home){border-radius:999px}
+  .nav-link:not(.nav-home).active{
+    background:radial-gradient(80% 100% at 50% 0%,rgba(255,194,58,.24),rgba(255,194,58,.04) 75%)}
+  .nav-link::before{top:1px;left:30%;right:30%;border-radius:0 0 4px 4px}
+}
+
+/* ==========================================================================
+   v1.33 · Bar graphs: product colours restored and made distinct
+   Fuel Oil = red, Lube oil (cylinder / ME system / GE system) = yellow, Diesel Oil = pink.
+   Applies to every tank bar, route/ETA-ETD bar and metric-card bar.
+   ========================================================================== */
+:root{
+  --bar-fo:linear-gradient(90deg,#ff3b30 0%,#d4141c 55%,#a30d14 100%);
+  --bar-do:linear-gradient(90deg,#ffb3d6 0%,#ff5fae 55%,#ec2f93 100%);
+  --bar-lo:linear-gradient(90deg,#fff07a 0%,#ffd814 55%,#f0b800 100%);
+  --bar-fo-glow:0 0 10px rgba(255,59,48,.55);
+  --bar-do-glow:0 0 10px rgba(255,95,174,.55);
+  --bar-lo-glow:0 0 10px rgba(255,216,20,.55);
+}
+.tank-bar.bar-fo span,.progress.bar-fo span,.hbar.bar-fo span{background:var(--bar-fo);box-shadow:var(--bar-fo-glow)}
+.tank-bar.bar-do span,.progress.bar-do span,.hbar.bar-do span{background:var(--bar-do);box-shadow:var(--bar-do-glow)}
+.tank-bar.bar-lo span,.progress.bar-lo span,.hbar.bar-lo span{background:var(--bar-lo);box-shadow:var(--bar-lo-glow)}
+/* Over-fill / danger is also red, so it gets diagonal stripes to stay distinguishable from the FO bar */
+.tank-bar.danger span,.hbar.over span{
+  background:repeating-linear-gradient(135deg,#ff6b7d 0 6px,#8f0a1c 6px 12px)!important;
+  box-shadow:0 0 10px rgba(216,19,47,.6)}
+/* 90%+ full: the bar keeps its product colour; the track gets an amber rim as the cue instead */
+.tank-bar.warn{box-shadow:inset 0 1px 3px rgba(0,0,0,.75),0 0 0 1px rgba(255,170,60,.75)}
+
+/* ==========================================================================
+   v1.37 · Fields that change with every sounding (Density, Corrected GOV, Observed
+   temperature — and Present ROB for weight-entry tanks) are outlined in teal so they
+   stand out from the fixed tank data. Teal is used only for this cue.
+   ========================================================================== */
+:root{--chg:#4fe3c1;--chg-soft:rgba(79,227,193,.12)}
+.field.chg>label{color:var(--chg)}
+.field.chg input{
+  border-color:rgba(79,227,193,.8);background:var(--chg-soft);
+  box-shadow:0 0 0 1px rgba(79,227,193,.22),0 0 12px rgba(79,227,193,.2)}
+.field.chg input:focus{border-color:var(--chg);box-shadow:0 0 0 2px rgba(79,227,193,.4),0 0 14px rgba(79,227,193,.3)}
+.field.chg>label::before{
+  content:"UPDATE";align-self:flex-start;margin-bottom:1px;padding:0 6px;border-radius:999px;
+  border:1px solid rgba(79,227,193,.6);color:var(--chg);font-size:.55rem;font-weight:800;letter-spacing:.08em;line-height:1.5}
+
+/* Save tank condition panel */
+.tank-save{margin-top:14px}
+.tank-save-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));align-items:start;gap:12px;margin-top:8px}
+.tank-save-row .field{min-width:0}
+.tank-save-row>button.primary{grid-column:1/-1;justify-self:start}
+.tsg-seg{display:flex;flex-wrap:wrap;gap:6px}
+.tsg-seg .ghost.on{border-color:var(--gold);color:var(--gold-2);background:rgba(255,194,58,.12)}
+.tsg-note{display:block;margin-top:6px;font-size:.74rem;line-height:1.35;color:var(--muted)}
+.tsg-note:empty{display:none}
+.tsg-note.ok{color:var(--chg)}
+.tsg-note.warn{color:#ffc77a}
+.tank-save-status{margin-top:10px;padding:8px 10px;border-radius:9px;font-size:.78rem;background:var(--well,rgba(0,0,0,.28));border:1px dashed var(--line);color:var(--muted)}
+.tank-save-status.ok{border-color:rgba(79,227,193,.55);color:var(--chg)}
+.tank-save-status.warn{border-color:rgba(255,170,60,.7);color:#ffc77a}
+.tank-log{margin-top:10px}
+.tank-log-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.tank-log-item{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;background:var(--tile,rgba(0,0,0,.25));border:1px solid var(--tile-line,var(--line-soft))}
+.tl-main{display:flex;flex-direction:column;min-width:0}
+.tl-main small{color:var(--muted);font-size:.7rem}
+.tl-actions{display:flex;gap:6px}
+
+/* v1.39 — tablet widths: the sidebar leaves too little room for two tank columns / two bunker columns, which made
+   the tank selects overlap (6-column field grid squeezed to ~25px) and pushed bunker inputs off-screen.
+   Below 1200px each tank group, bunker grid and allocation list uses a single column. */
+@media (min-width:761px) and (max-width:1199px) and (min-height:560px){
+  .tank-group{grid-template-columns:1fr}
+  .bunker-grid{grid-template-columns:1fr}
+  .allocation-list{grid-template-columns:1fr}
+}
+
+/* v1.40: checkbox labels inside .field stay on one row, box at the left */
+.field label.check{flex-direction:row;align-items:center;justify-content:flex-start;text-align:left;gap:8px}
+.field label.check input{flex:0 0 18px;width:18px;height:18px;margin:0}
+/* v1.40: condition date/time sits at the top of the Tanks tab */
+.tank-save.tank-date{margin-top:0;margin-bottom:14px}
+
+/* v1.40: smaller icon on the intro screen */
+.intro-icon{width:84px;height:84px;border-radius:19px}
+.intro-glow{width:170px;height:170px}
+
+/* v1.40: Sulphur content beside Fuel type (tank cards and bunker boxes) */
+.ft-sul-row{display:grid;grid-template-columns:minmax(0,1fr) 112px;gap:10px;align-items:start}
+.tank-fields>.field.ft-sul-row{grid-column:1/-1}
+.ft-sul-row .ft-col,.ft-sul-row .sul-col{min-width:0}
+.ft-sul-row .sul-col input{width:100%}
+.sul-proj{display:block;margin-top:3px;font-size:.68rem;font-weight:700;color:var(--gold-2);line-height:1.25}
+.sul-proj:empty{display:none}
+.rt-sul{color:var(--gold-2);font-weight:800;white-space:nowrap}
+
+/* v1.40: Noon report ROB card stands out at the top of the Tanks tab */
+#tanks>.panel.noon-card{position:relative;border:1.5px solid var(--gold-2);background:linear-gradient(160deg,rgba(255,198,58,.13),rgba(255,198,58,.03) 55%),var(--deep);box-shadow:0 0 0 1px rgba(255,198,58,.18),0 0 26px rgba(255,198,58,.22),0 10px 28px rgba(0,0,0,.45);padding-top:14px}
+#tanks>.panel.noon-card::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(var(--gold-2),#c98a12)}
+#tanks>.panel.noon-card .noon-head strong{font-size:1.18rem;font-weight:900;letter-spacing:.02em;color:var(--gold-2);text-shadow:0 0 14px rgba(255,198,58,.35)}
+#tanks>.panel.noon-card .noon-date-chip{font-weight:800;background:rgba(255,198,58,.16);color:var(--gold-2)}
+#tanks>.panel.noon-card input{font-weight:800;font-size:1.02rem;border-color:rgba(255,198,58,.45)}
+#tanks>.panel.noon-card input:focus{border-color:var(--gold-2);box-shadow:0 0 0 2px rgba(255,198,58,.35)}
+
+/* v1.40: Capacity sits to the right of Tank role; pumpable ROB readouts */
+.tank-fields>.field:nth-child(1){grid-column:span 3}
+.tank-fields>.field.f-cap{grid-column:span 3}
+.tg-head small .tg-pump{display:block;margin-top:2px;color:var(--gold-2);font-weight:700}
+.tg-head small .tg-pump b{font-weight:900}
+.tank-fields>.field.rob-computed .pump-val{color:var(--gold-2)}
+.tank-fields>.field.f-num select{width:100%}
+
+/* v1.40: compact tank-card fields — the UPDATE tag sits beside the label text instead of above it */
+.tank-fields>.field.f-num>label{grid-template-rows:2.4em auto;gap:3px}
+.tank-fields>.field.f-num.chg>label{grid-template-columns:minmax(0,1fr) auto;column-gap:6px}
+.tank-fields>.field.f-num.chg>label::before{grid-row:1;grid-column:2;align-self:end;justify-self:end;margin:0 0 2px}
+.tank-fields>.field.f-num.chg>label>input{grid-column:1/-1}
+.tank-fields>.field.rob-computed{grid-template-rows:2.4em auto auto;row-gap:3px}
+.cap-mt,.rob-computed-note{min-height:0}
+.tank-fields{row-gap:8px}
+
+.tank-fields>.field.f-num>label{grid-template-rows:minmax(2.4em,auto) auto}
+.tank-fields>.field.f-num.chg>label::before{letter-spacing:.04em;padding:0 5px}
+.pump-val{display:block;margin-top:0;font-size:1.05rem;font-weight:800;font-variant-numeric:tabular-nums;padding:0;border:0;background:none;box-shadow:none}
+.tank-fields>.field.rob-computed.pump{grid-column:span 3}
+.tank-fields>.field.rob-computed{grid-template-columns:minmax(0,1fr);justify-content:stretch}
+
+/* v1.40: Dashboard Tank ROB — unpumpable and sulphur change */
+.rt-unp{display:block;font-size:.64rem;font-weight:600;color:var(--faint);line-height:1.2}
+.rt-bk-s{margin-left:4px;color:var(--gold-2);border-color:rgba(255,198,58,.5)}
+.rt-group-unp{display:flex;justify-content:space-between;gap:8px;margin-top:2px;font-size:.74rem;color:var(--muted)}
+.rt-group-unp strong{font-weight:700;color:var(--text)}
+.rt-nm .rt-unp{white-space:normal;overflow:visible;text-overflow:clip}
+.rt-nm .rt-ft{white-space:normal;overflow:visible;text-overflow:clip}
+.rt-group-unp{padding:2px 10px}
+
+/* v1.41: Dashboard Tank ROB — the Bunkered / Sulphur-change tags sit in a full-width strip below the ETA/ETD bars
+   instead of squeezing into the narrow tank-name column */
+.rt-row{row-gap:4px}
+.rt-row .rt-extra{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-width:0}
+.rt-row .rt-extra .rt-bk{margin-top:0;margin-left:0;white-space:nowrap}
+.rt-row .rt-extra .rt-unp-chip{display:inline-block;margin:0 4px 0 0}
+.rt-row .rt-nm .rt-ft{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt-row .rt-extra .rt-ft-chip{display:inline-block;margin:0 4px 0 0;white-space:nowrap}
+.rt-row .rt-name .rt-nm>span{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+
+/* v1.41: wide (3-column) tank card — Pumpable ROB takes one column and Density drops to the third column, directly
+   below Present ROB; "Enter ROB as" follows on the last row. (On phones the 2-column order already puts Density under Present ROB.) */
+@media (min-width:761px) and (min-height:560px){
+  .tank-fields>.field.rob-computed.pump{grid-column:span 2}
+  .tank-fields>.field.tk-dens{order:1}
+}
+
+/* v1.41: Bunker tab — % by volume of the tank after bunkering, under each tank's bunker-quantity input */
+.alloc-pct{display:block;margin-top:3px;font-size:.7rem;color:var(--muted);line-height:1.25}
+.alloc-pct b{color:var(--gold-2);font-variant-numeric:tabular-nums}
+.alloc-pct .ap-vol{color:var(--faint);white-space:nowrap}
+.alloc-pct.over85 b{color:#ffb020}
+.alloc-pct.over b{color:#ff6b6b}
+.tank-ineligible .alloc-pct{display:none}
+
+/* v1.42 — by-tank entry and lube-oil drums */
+.bunker-box .field select{width:100%}
+.bunker-box input.auto-total{background:var(--well,rgba(0,0,0,.25));color:var(--gold-2);font-weight:700;cursor:default}
+.alloc-head{margin-top:10px;font-size:.74rem}
+.allocation-list input:disabled{opacity:.45;cursor:not-allowed}
+.drum-box{margin-top:10px;padding:9px;border:1px dashed var(--line);border-radius:10px;background:var(--tile,rgba(255,255,255,.04))}
+.drum-box[hidden]{display:none}
+.drum-sum-row{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.74rem;color:var(--muted)}
+.drum-sum-row strong{color:var(--text);font-variant-numeric:tabular-nums}
+.drum-sum-row .ds-end strong{color:var(--gold-2)}
+.drum-sum .alert{margin-top:6px}
+.drum-open{margin-bottom:10px}
+
+/* v1.43 — port flags: amber = bunkering planned, cyan = ECA/SECA changeover (both can apply to one port) */
+:root{--pf-bunk:#ff8a1f;--pf-eca:#3cc8ee}
+.pflags{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.pflags:empty{display:none}
+.pflag{display:inline-block;padding:1px 7px;border-radius:999px;font-size:.62rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;line-height:1.5;white-space:nowrap}
+.pf-chip-bunk{background:rgba(255,138,31,.2);color:#ffb866;border:1px solid var(--pf-bunk)}
+.pf-chip-eca{background:rgba(60,200,238,.16);color:#8fe3f8;border:1px solid var(--pf-eca)}
+/* Bunkering tab port cards: coloured edge stripe (split when both apply) + a faint tint */
+details.item-card.route-card.pf-bunk,details.item-card.route-card.pf-eca{position:relative}
+details.item-card.route-card.pf-bunk::before,details.item-card.route-card.pf-eca::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;z-index:1;pointer-events:none}
+details.item-card.route-card.pf-bunk::before{background:var(--pf-bunk)}
+details.item-card.route-card.pf-eca::before{background:var(--pf-eca)}
+details.item-card.route-card.pf-both::before{background:linear-gradient(var(--pf-bunk) 50%,var(--pf-eca) 50%)}
+details.item-card.route-card.pf-bunk{border-left-color:var(--pf-bunk);background-image:linear-gradient(90deg,rgba(255,138,31,.10),transparent 45%)}
+details.item-card.route-card.pf-eca{border-left-color:var(--pf-eca);background-image:linear-gradient(90deg,rgba(60,200,238,.10),transparent 45%)}
+details.item-card.route-card.pf-both{background-image:linear-gradient(90deg,rgba(255,138,31,.09),rgba(60,200,238,.09) 50%,transparent 80%)}
+/* Dashboard route timeline nodes */
+.route-node.pf-bunk{border-color:var(--pf-bunk)!important;box-shadow:inset 0 3px 0 var(--pf-bunk)}
+.route-node.pf-eca{border-color:var(--pf-eca)!important;box-shadow:inset 0 3px 0 var(--pf-eca)}
+.route-node.pf-both{border-color:var(--pf-bunk)!important;box-shadow:inset 0 3px 0 var(--pf-bunk),inset 0 -3px 0 var(--pf-eca)}
+.route-node .pflags{margin-top:2px}
+/* Full route table rows */
+.route-summary tr.pf-bunk:not(.pf-both) td:first-child{box-shadow:inset 5px 0 0 var(--pf-bunk)}
+.route-summary tr.pf-eca:not(.pf-both) td:first-child{box-shadow:inset 5px 0 0 var(--pf-eca)}
+.route-summary tr.pf-both td:first-child{background-image:linear-gradient(var(--pf-bunk) 50%,var(--pf-eca) 50%);background-size:5px 100%;background-repeat:no-repeat}
+.route-summary tr.pf-bunk td{background-color:rgba(255,138,31,.07)}
+.route-summary tr.pf-eca td{background-color:rgba(60,200,238,.07)}
+.route-summary tr.pf-both td{background-color:rgba(255,138,31,.05)}
+.route-summary td .pflag{margin:2px 4px 0 0}
+/* Bunkering required / planned card */
+.bn-port{margin-bottom:8px;padding-left:9px;border-left:4px solid var(--line)}
+.bn-port.pf-bunk{border-left-color:var(--pf-bunk)}
+.bn-port.pf-eca{border-left-color:var(--pf-eca)}
+.bn-port.pf-both{border-image:linear-gradient(var(--pf-bunk) 50%,var(--pf-eca) 50%) 1}
+.bn-port:last-child{margin-bottom:0}
+.bn-flags{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px}
+.bn-flags:empty{display:none}
+.bunker-needed-rows em.need-more{font-style:normal;color:var(--warn);font-weight:700}
+
+/* v1.43 — Tanks tab: "Enter ROB as" and "Sequence" sit directly under Tank name, side by side */
+.tank-fields>.field.tk-robas,.tank-fields>.field.tk-seq,.tank-fields>.fixed-rob-note.tk-seq{grid-column:span 3;order:0}
+.tank-fields>.field.tk-seq select{width:100%}
+/* v1.43 — Bunkering tab: per-tank entry is detected automatically */
+.bunker-box.by-tank .only-total,.bunker-box.by-tank .bunker-live{display:none}
+.bunker-box input.auto-total{cursor:text}
+.alloc-max{display:block;margin-top:3px;font-size:.68rem;color:var(--faint);line-height:1.25}
+.alloc-max b{color:var(--gold-2);font-variant-numeric:tabular-nums}
+.tank-ineligible .alloc-max{display:none}
+.allocation-list input::placeholder{color:var(--faint);opacity:.85}
+
+/* v1.44: Home — Port details and Tank ROB are their own cards; unpumpable removed from Tank ROB */
+.port-details-card:empty,.tank-rob-card:empty{display:none}
+.tank-rob-card .rt-whole{margin:0}
+.tank-rob-card .rt-title{margin-top:2px}
+.rt-row .rt-extra .rt-bk-pair{display:inline-flex;flex-wrap:nowrap;align-items:center;gap:6px;max-width:100%}
+.rt-row .rt-extra .rt-bk-pair .rt-bk{margin:0}
+/* Sulphur change tag: black text on the gold plate for contrast */
+.rt-bk.rt-bk-s,.rt-row .rt-extra .rt-bk-s{margin-left:0;color:#000;background:var(--gold);border-color:rgba(0,0,0,.25);white-space:nowrap}
+
+/* v1.44b: Bunkering tab — the drum stock box sits below the last port card with clear space above it */
+#drumStockBox{margin-top:28px}
+.drum-open{margin-bottom:10px}
+
+/* v1.45: date + UTC offset on one line (Tanks tab) */
+.pos-row .pos-port{flex:1 1 11rem}
+.tank-save-row .tsg-date{grid-column:1/-1}
+.noon-card .pos-row{max-width:34rem}
+
+/* v1.45 — compact port flags, results sub-heading, opaque sticky columns (no text bleed-through when scrolling) */
+.route-node .pflag{font-size:.5rem;padding:0 5px;letter-spacing:.02em;line-height:1.4}
+.table-wrap td .pflag,.route-summary td .pflag{font-size:.5rem;padding:0 5px;letter-spacing:.02em;line-height:1.4;margin:0 3px 0 0}
+.port-flags{display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
+.port-flags:empty{display:none}
+.results-subhead{margin:.2rem 0 .5rem;font-size:1rem;color:var(--gold-2,var(--text))}
+/* # column and Port column both stay put; every sticky cell gets an opaque base so scrolled text cannot show through */
+.table-wrap th:nth-child(1),.table-wrap td:nth-child(1){position:sticky;left:0;min-width:2.2rem;width:2.2rem;max-width:2.2rem;box-sizing:border-box;z-index:2}
+.table-wrap th:nth-child(2),.table-wrap td:nth-child(2){left:2.2rem;min-width:7rem}
+.table-wrap th:nth-child(1){z-index:4;background:#341324}
+.table-wrap th:nth-child(2){z-index:3;background:#341324}
+.table-wrap td:nth-child(1),.table-wrap td:nth-child(2){background:var(--surface)}
+.table-wrap tbody tr:nth-child(even) td:nth-child(1),.table-wrap tbody tr:nth-child(even) td:nth-child(2){background:linear-gradient(rgba(255,194,58,.035),rgba(255,194,58,.035)),var(--surface)}
+.table-wrap tbody tr.pf-bunk td:nth-child(1),.table-wrap tbody tr.pf-bunk td:nth-child(2){background:linear-gradient(rgba(255,138,31,.07),rgba(255,138,31,.07)),var(--surface)}
+.table-wrap tbody tr.pf-eca td:nth-child(1),.table-wrap tbody tr.pf-eca td:nth-child(2){background:linear-gradient(rgba(60,200,238,.07),rgba(60,200,238,.07)),var(--surface)}
+.table-wrap tbody tr.pf-both td:nth-child(1),.table-wrap tbody tr.pf-both td:nth-child(2){background:linear-gradient(rgba(255,138,31,.05),rgba(255,138,31,.05)),var(--surface)}
+.table-wrap tbody tr.pf-bunk:not(.pf-both) td:first-child{box-shadow:inset 5px 0 0 var(--pf-bunk)}
+.table-wrap tbody tr.pf-eca:not(.pf-both) td:first-child{box-shadow:inset 5px 0 0 var(--pf-eca)}
+
+/* v1.47 — Noon report ROB vs Actual tank ROB as a compact table */
+#robCompare .metric-grid-inner{display:block}
+.rob-compare-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line-soft);border-radius:10px;background:var(--surface)}
+.rob-compare-table{width:100%;border-collapse:collapse;font-size:.76rem;font-variant-numeric:tabular-nums}
+.rob-compare-table th,.rob-compare-table td{padding:.32rem .5rem;border-bottom:1px solid var(--line-soft);text-align:right;white-space:nowrap}
+.rob-compare-table thead th{background:linear-gradient(180deg,#4a1a2e,#341324);color:var(--gold-2,var(--muted));font-size:.68rem;font-weight:700}
+.rob-compare-table th:first-child,.rob-compare-table tbody th{text-align:left;font-weight:700;color:var(--text)}
+.rob-compare-table tbody tr:last-child th,.rob-compare-table tbody tr:last-child td{border-bottom:0}
+.rob-compare-table tbody tr{cursor:pointer}
+.rob-compare-table tbody tr:nth-child(even){background:rgba(255,194,58,.035)}
+.rob-compare-table tbody tr.warn{box-shadow:inset 3px 0 0 var(--warn)}
+.rob-compare-table .rob-diff{font-weight:700}
+.rob-compare-table .rob-diff.ok{color:var(--good)}
+.rob-compare-table .rob-diff.warn{color:var(--warn)}
+
+/* v1.48 — floating Save button on the Tanks tab */
+.tank-fab{position:fixed;z-index:60;right:14px;bottom:calc(var(--nav-h) + var(--sab) + 14px);display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:999px;font-weight:800;font-size:.9rem;background:var(--gold);color:#2a0d18;border:1px solid var(--gold-2,var(--gold));box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.tank-fab[hidden]{display:none}
+.tank-fab .ico{width:18px;height:18px}
+.tank-fab.dirty{box-shadow:0 0 0 3px rgba(255,170,60,.45),0 6px 20px rgba(0,0,0,.5)}
+@media (min-width:761px) and (min-height:560px){.tank-fab{bottom:20px;right:24px}}
+@media (orientation:landscape) and (max-height:559px){.tank-fab{bottom:calc(var(--nav-h) + var(--sab) + 10px)}}
+#tankLeaveModal .button-row{margin-top:12px}
+
+/* v1.49 — flags stacked in a column under the port name in the Results table */
+.port-flags{flex-direction:column;align-items:flex-start;gap:2px}
+.table-wrap td .port-flags .pflag{margin:0}
+
+/* v1.51 — Tank ROB header: fold hint + legend at far right; swipe slide-in; save toast */
+.rt-whole>summary.rt-title{justify-content:flex-start;gap:6px;flex-wrap:wrap}
+.rt-whole>summary.rt-title .rt-hint{flex:1 1 auto;min-width:0;font-size:.68rem;font-weight:500;color:var(--muted);line-height:1.25}
+.rt-whole[open]>summary.rt-title .rt-hint{display:none}
+.rt-whole>summary.rt-title .rt-legend{margin-left:auto;flex:none}
+.swipe-in-next{animation:swipeInNext .22s ease-out}
+.swipe-in-prev{animation:swipeInPrev .22s ease-out}
+@keyframes swipeInNext{from{opacity:.35;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes swipeInPrev{from{opacity:.35;transform:translateX(-26px)}to{opacity:1;transform:none}}
+.tank-rob-card{touch-action:pan-y}
+.save-toast{position:fixed;z-index:1300;left:50%;bottom:calc(var(--nav-h) + var(--sab) + 70px);transform:translate(-50%,10px);max-width:min(92vw,420px);padding:10px 16px;border-radius:12px;background:#0f3a24;color:#b8f5cf;border:1px solid #2fbf71;font-size:.88rem;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;text-align:center}
+.save-toast.show{opacity:1;transform:translate(-50%,0)}
+@media (min-width:761px) and (min-height:560px){.save-toast{bottom:76px}}
+@media (prefers-reduced-motion:reduce){.swipe-in-next,.swipe-in-prev{animation:none}}
+
+/* v1.54 — highlighted "Tank condition report" title above Condition date & time */
+#tankDatePanel{position:relative;border:1.5px solid var(--gold-2);background:linear-gradient(160deg,rgba(255,198,58,.12),rgba(255,198,58,.03) 55%),var(--deep);box-shadow:0 0 0 1px rgba(255,198,58,.16),0 0 22px rgba(255,198,58,.18)}
+#tankDatePanel .tcr-title{margin:-2px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(255,198,58,.35)}
+#tankDatePanel .tcr-title span{font-size:1.18rem;font-weight:900;letter-spacing:.02em;color:var(--gold-2);text-shadow:0 0 14px rgba(255,198,58,.35)}
+
+
+/* v1.55: ECA/SECA question + line distances on the Ports tab */
+.eca-port-q{margin-top:6px;padding-top:10px;border-top:1px solid var(--tile-line,rgba(255,255,255,.12))}
+.eca-dir-title{margin:6px 0 4px;font-size:.85rem}
+
+
+/* v1.61: the ECA/SECA port question sits at the top of each ECA/SECA tab card */
+.eca-port-block{margin-bottom:12px}
+
+/* ===== v1.62 — Plan a bunkering (Home button + pop-up) ===== */
+.plan-bunker-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;margin:0 0 10px;font-size:1.05rem;letter-spacing:.01em;border-radius:14px}
+.plan-bunker-btn .ico{width:24px;height:24px;flex:none}
+.pb-card{width:min(980px,100%);overflow-x:hidden}
+.pb-results,.pb-results>*{min-width:0}
+.pb-intro{margin:6px 0 10px;font-size:.84rem}
+.pb-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;align-items:end;margin-bottom:10px}
+.pb-form .pb-wide{grid-column:1/-1}
+.pb-form [hidden]{display:none!important}
+.pb-check{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:.84rem}
+.pb-check input{width:auto;height:auto}
+.pb-results{display:grid;gap:10px}
+.pb-empty{padding:14px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}
+.pb-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.pb-port{font-size:1.25rem}
+.pb-port+.pflag{margin-left:8px}
+.pb-status{display:inline-block;max-width:100%;white-space:normal;overflow-wrap:anywhere;padding:4px 10px;border-radius:999px;font-size:.78rem;font-weight:800;border:1px solid transparent}
+.pb-status.ok{background:rgba(69,214,155,.14);color:var(--good);border-color:rgba(69,214,155,.4)}
+.pb-status.warn{background:rgba(255,154,60,.15);color:var(--warn);border-color:rgba(255,154,60,.45)}
+.pb-status.bad{background:rgba(255,107,125,.16);color:var(--danger);border-color:rgba(255,107,125,.5)}
+.pb-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:4px 16px;font-size:.8rem;color:var(--muted)}
+.pb-meta span{min-width:0;overflow-wrap:anywhere}
+.pb-meta b{color:var(--text)}
+.pb-warn{margin:0;padding:8px 10px 8px 26px;border:1px solid rgba(255,154,60,.45);border-radius:10px;background:rgba(255,154,60,.09);font-size:.8rem;line-height:1.4}
+.pb-prod{background:var(--tile,rgba(255,255,255,.04));border:1px solid var(--line-soft);border-radius:12px;padding:10px}
+.pb-prod.need{border-color:var(--line-gold)}
+.pb-prod.warn{border-color:rgba(255,154,60,.55)}
+.pb-prod.none{opacity:.92}
+.pb-prod header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.pb-prod h4{margin:0;font-size:1rem}
+.pb-prod h4 small{display:block;font-weight:600;color:var(--muted);font-size:.74rem;margin-top:1px}
+.pb-big{text-align:right}
+.pb-big span{display:block;font-size:.7rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.pb-big strong{font-size:1.35rem;color:var(--gold-2);white-space:nowrap}
+.pb-prod.none .pb-big strong{color:var(--muted)}
+.pb-figs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 12px;margin-bottom:8px}
+.pb-figs div{min-width:0}
+.pb-figs span{display:block;font-size:.68rem;color:var(--faint);line-height:1.2}
+.pb-figs strong{font-size:.86rem;font-variant-numeric:tabular-nums}
+.pb-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line-soft);border-radius:10px;background:var(--surface)}
+.pb-table{width:100%;border-collapse:collapse;font-size:.8rem;font-variant-numeric:tabular-nums}
+.pb-table th,.pb-table td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+.pb-table thead th{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.pb-table tbody th{text-align:left;white-space:normal;min-width:130px;font-weight:700}
+.pb-table th:first-child{text-align:left}
+.pb-table tbody th small{display:block;font-weight:500;color:var(--faint);font-size:.68rem}
+.pb-table tr:last-child>*{border-bottom:0}
+.pb-table .pb-qty{font-weight:800;color:var(--gold-2)}
+.pb-table tr.pb-skip{opacity:.55}
+.pb-table tr.pb-load{background:rgba(255,194,58,.07)}
+.pb-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:12px;position:sticky;bottom:-16px;padding:10px 0 2px;background:linear-gradient(180deg,transparent,var(--surface) 28%)}
+.pb-foot .primary{display:inline-flex;align-items:center;gap:8px}
+.pb-foot .primary .ico{width:18px;height:18px}
+.pb-foot .primary:disabled{opacity:.45;cursor:not-allowed}
+@media (max-width:560px){
+  .pb-form{grid-template-columns:1fr}
+  .pb-big strong{font-size:1.15rem}
+  .pb-foot>button{flex:1 1 0}
+}
+
+/* v1.62 chunk 2 — grade / sulphur / per-tank entry / apply */
+.pb-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 12px;align-items:end;margin-bottom:8px}
+.pb-opts label{display:flex;flex-direction:column;gap:3px;font-size:.72rem;font-weight:700;color:var(--muted)}
+.pb-opts input,.pb-opts select{height:34px}
+.pb-opts .ghost{justify-self:start}
+.pb-table input.pb-tq{width:92px;height:30px;text-align:right;padding:0 .4rem;font-weight:800;color:var(--gold-2)}
+.pb-foot .secondary{display:inline-flex;align-items:center;gap:8px}
+.pb-foot .secondary .ico{width:18px;height:18px}
+.pb-foot .secondary:disabled{opacity:.45;cursor:not-allowed}
+
+/* v1.62 chunk 3 — compare ports */
+.pb-compare{margin:0 0 10px;border:1px solid var(--line-soft);border-radius:12px;padding:8px 10px;background:var(--tile,rgba(255,255,255,.04))}
+.pb-compare>summary{cursor:pointer;font-weight:800;font-size:.88rem}
+.pb-cmp-note{font-size:.76rem;margin:8px 0}
+.pb-cmp th small{display:block;font-weight:500;color:var(--faint);font-size:.66rem}
+.pb-cmp tr.pb-cur{background:rgba(255,194,58,.1)}
+.pb-cmp .pb-status{font-size:.7rem;padding:2px 8px}
